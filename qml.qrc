@@ -4,5 +4,10 @@
         <file>Page1Form.ui.qml</file>
         <file>Page2Form.ui.qml</file>
         <file>qtquickcontrols2.conf</file>
+        <file>js/commons.js</file>
+        <file>FormProveedor.qml</file>
+        <file>FormKardex.qml</file>
+        <file>utils/JTextFinder.qml</file>
+        <file>KardexLanding.qml</file>
     </qresource>
 </RCC>
