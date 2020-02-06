@@ -84,6 +84,12 @@ Page {
         }
         itemDelegate: Rectangle {clip: true}
         model: kardexModel
+
+        onDoubleClicked: {
+            var entryId = kardexModel.get(twKardex.currentRow).id;
+            console.info( "Entry ID: "+ entryId );
+        }
+
     }
 
 }

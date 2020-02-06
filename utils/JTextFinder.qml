@@ -4,7 +4,7 @@ FocusScope {
     id: focusScope
 
     property var textControl:txtInput
-    property var list:[]
+    property alias list: __txtFinder_model
     property int indexSelected:0
     property alias radius: rectangle.radius
     property alias text: txtInput.text
@@ -32,6 +32,10 @@ FocusScope {
         border.width: 1
         clip: true
 
+        ListModel {
+            id:__txtFinder_model
+        }
+
         TextInput {
             id: txtInput
             z:101
@@ -40,26 +44,26 @@ FocusScope {
                 print("list length: "+list.length);
                 if(txtInput.text.length > 0){
                     var isFind=false;
-                    list.forEach(function(item, index){
+
+                    for(var i=0; i <= list.count; i++){
                         if(!isFind){
-                            var pos = item.name.search(txtInput.text);
+                            var pos = list.get(i).name.search(txtInput.text);
                             if(pos === 0){
-                                txtPlaceholder.text = item.name;
-                                indexSelected = index;
+                                txtPlaceholder.text = list.get(i).name;
+                                indexSelected = i;
                                 isFind=true;
                             }
                         }
-                    });
+                    }
                 }else if(txtInput.text.length == 0){
                     txtPlaceholder.text=placeholder;
                 }
-
             }
 
             function acceptInput(){
                 print("Intro pressed");
-                print("Proveedor: "+"["+list[indexSelected].id+"]"+list[indexSelected].lastName+", "+list[indexSelected].firstName);
-                txtInput.text = list[indexSelected].name;
+                print("Proveedor: "+"["+list.get(indexSelected).id+"]"+list.get(indexSelected).lastName+", "+list.get(indexSelected).firstName);
+                txtInput.text =  list.get(indexSelected).name;
             }
 
             y: 15

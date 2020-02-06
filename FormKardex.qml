@@ -1,6 +1,7 @@
-import QtQuick 2.12
+﻿import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Controls 1.2
+import QtQuick.Controls.Styles 1.4
 import "js/commons.js" as Js
 import "utils" as Jc
 
@@ -8,7 +9,7 @@ Page {
     id: page
     title: qsTr("Kardex")
 
-    property var proveedores: []
+    property alias proveedores: finder.list
     property var pesos: []
     property bool isBoletaCreate: false
     property string idBoleta: ""
@@ -28,7 +29,7 @@ Page {
     function createBoleta(){
         Js.createKardexEntry({
                                  "fecha":txtFecha.text,
-                                 "proveedorId":proveedores[finder.indexSelected].id,
+                                 "proveedorId":proveedores.get(finder.indexSelected).id,
                                  "pesos":pesos
                              }, function(obj){
                                  //señal
@@ -52,7 +53,6 @@ Page {
 
     Jc.JTextFinder{
         id: finder
-        list: proveedores
         placeholder: qsTr("Proveedores")
         height: 40
         radius: 20
@@ -102,7 +102,7 @@ Page {
     TableView {
         id: twPesos
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
+        anchors.bottomMargin: 26
         anchors.right: parent.right
         anchors.rightMargin: 5
         anchors.left: parent.left
@@ -156,6 +156,19 @@ Page {
         x: 132
         width: 100
         height: 40
+        style: ButtonStyle {
+            background: Rectangle {
+                implicitWidth: 100
+                implicitHeight: 25
+                border.width: control.activeFocus ? 2 : 1
+                border.color: "#888"
+                radius: 4
+                gradient: Gradient {
+                    GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
+                    GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
+                }
+            }
+        }
 
         text: qsTr("Guardar")
         anchors.right: parent.right
@@ -165,11 +178,57 @@ Page {
         onClicked: createBoleta()
     }
 
+    Switch {
+        id: switchBoletaOpen
+        x: 587
+        y: 441
+        anchors.right: parent.right
+        anchors.rightMargin: 5
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
+        checked: false
+    }
+
+    Label {
+        id: lblBoletaOpen
+        x: 530
+        y: 459
+        text: qsTr("Abierto/Cerrado")
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 4
+        anchors.right: switchBoletaOpen.left
+        anchors.rightMargin: 5
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+    }
+
+    ComboBox {
+        id: cmbSeries
+        x: 259
+        y: 5
+        width: 70
+        height: 40
+        anchors.right: btnKardexSave.left
+        anchors.rightMargin: 160
+    }
+
+    TextField {
+        id: txtSerie
+        y: 5
+        width: 151
+        height: 40
+        text: qsTr("")
+        placeholderText: qsTr("Numeracion")
+        anchors.left: cmbSeries.right
+        anchors.leftMargin: 5
+    }
+
 }
 
 /*##^##
 Designer {
     D{i:0;autoSize:true;height:480;width:640}D{i:2;anchors_x:5;anchors_y:51}D{i:3;anchors_width:80;anchors_x:41;anchors_y:51}
-D{i:4;anchors_x:5;anchors_y:97}D{i:5;anchors_y:51}D{i:6;anchors_y:5}D{i:7;anchors_y:12}
+D{i:4;anchors_x:5;anchors_y:97}D{i:6;anchors_y:5}D{i:7;anchors_y:12}D{i:5;anchors_y:51}
+D{i:14;anchors_x:294}D{i:17;anchors_y:459}
 }
 ##^##*/

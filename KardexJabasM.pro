@@ -1,4 +1,4 @@
-QT += core quick
+QT += core quick sql
 
 CONFIG += c++17
 
@@ -45,3 +45,6 @@ DEPENDPATH += $$PWD/../../../../../usr/local/include/bsoncxx/v_noabi
 HEADERS += \
     proveedorcontroller.h \
     proveedormodel.h
+
+DISTFILES += \
+    utils/jfieldItem.txt

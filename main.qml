@@ -5,12 +5,16 @@ import "js/commons.js" as Js
 
 ApplicationWindow {
     id:window
-    property var proveedorList:[]
+    property var proveedorList
+    property var kardexModel: []
     Component.onCompleted: {
-        Js.getRequester("http://localhost:8095/rest/proveedor/all", function(json){
-            proveedorList = json;
-            print("Proveedores asignados");
-        });
+      Js.getRequester("http://localhost:8095/rest/proveedor/all", function(json){
+          print();
+            json.forEach(function(item, index){
+                frmKardex.proveedores.append(item);
+            });
+      });
+
     }
 
     visible: true
@@ -73,23 +77,31 @@ ApplicationWindow {
         }
     }
 
+    ListModel{
+        id: __proveedores_model
+    }
+
     SwipeView {
         id: swipeView
         anchors.fill: parent
         currentIndex: 0
 
+        FormBoleta {
+            id: frmBoleta
+        }
+
         FormProveedor{
             id: frmProveedor
-            proveedores: proveedorList
         }
 
         KardexLanding{
             id: kardexLanding
+
         }
 
         FormKardex{
             id: frmKardex
-            proveedores: proveedorList
+
             onEntrySaved: function(obj){
                 kardexLanding.addEntry(obj);
             }
