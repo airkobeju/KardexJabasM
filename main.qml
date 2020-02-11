@@ -2,25 +2,34 @@ import QtQuick 2.10
 import QtQuick.Controls 1.2
 import QtQuick.Controls 2.3
 import "js/commons.js" as Js
+import com.jmtp.http 1.0
 
 ApplicationWindow {
     id:window
     property var proveedorList
     property var kardexModel: []
-    Component.onCompleted: {
-      Js.getRequester("http://localhost:8095/rest/proveedor/all", function(json){
-          print();
-            json.forEach(function(item, index){
-                frmKardex.proveedores.append(item);
-            });
-      });
 
+    function replyFinished(strjson, model) {
+        var json = JSON.parse(strjson);
+        print("json DataType: "+ typeof json);
+        json.forEach(function(item,index){
+            model.append(item);
+        });
+    }
+
+    Component.onCompleted: {
+        gcProveedores.send();
+        getControllerKardex.send();
+        getControllerKardexSeries.send();
     }
 
     visible: true
     width: 640
     height: 480
     title: qsTr("Tabs")
+
+    property ListModel modelKardexSeries: ListModel{}
+    property ListModel modelProveedores: ListModel{}
 
     Drawer{
         id: drawer
@@ -31,15 +40,16 @@ ApplicationWindow {
             anchors.fill: parent
 
             ItemDelegate {
-                text: qsTr("Proveedor")
+                text: qsTr(kardexLanding.title)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 0;
                     drawer.close()
                 }
             }
+
             ItemDelegate {
-                text: qsTr("Kardex Home")
+                text: qsTr(frmProveedor.title)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 1;
@@ -48,10 +58,19 @@ ApplicationWindow {
             }
 
             ItemDelegate {
-                text: qsTr("Kardex")
+                text: qsTr(frmKardex.title)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 2;
+                    drawer.close()
+                }
+            }
+
+            ItemDelegate {
+                text: qsTr(frmSerie.title)
+                width: parent.width
+                onClicked: {
+                    swipeView.currentIndex = 3;
                     drawer.close()
                 }
             }
@@ -77,8 +96,41 @@ ApplicationWindow {
         }
     }
 
-    ListModel{
-        id: __proveedores_model
+    GetController {
+        id: gcProveedores
+        url: "http://localhost:8095/rest/proveedor/all"
+        onReplyFinished: {
+            var json = JSON.parse(strJson);
+            print("json DataType: "+ typeof json);
+            json.forEach(function(item,index){
+                modelProveedores.append(item);
+            });
+        }
+    }
+
+    GetController {
+        id: getControllerKardex
+        url: "http://localhost:8095/rest/kardex/all"
+        onReplyFinished: {
+            var json = JSON.parse(strJson);
+            print("json DataType: "+ typeof json);
+            json.forEach(function(item,index){
+                kardexLanding.modelEntries.append(item);
+            });
+        }
+    }
+
+    GetController {
+        id: getControllerKardexSeries
+        url: "http://localhost:8095/rest/kardexserie/all"
+        onReplyFinished: {
+            var json = JSON.parse(strJson);
+            print("json DataType: "+ typeof json);
+            json.forEach(function(item,index){
+                modelKardexSeries.append(item);
+            });
+
+        }
     }
 
     SwipeView {
@@ -86,92 +138,29 @@ ApplicationWindow {
         anchors.fill: parent
         currentIndex: 0
 
-        FormBoleta {
-            id: frmBoleta
+        KardexLanding{
+            id: kardexLanding
         }
 
         FormProveedor{
             id: frmProveedor
-        }
-
-        KardexLanding{
-            id: kardexLanding
-
+            proveedores: modelProveedores
         }
 
         FormKardex{
             id: frmKardex
+            series: modelKardexSeries
+            proveedores: modelProveedores
 
             onEntrySaved: function(obj){
                 kardexLanding.addEntry(obj);
             }
-
         }
 
-        Page1Form {
-            Button {
-                id: btnLoadProveedor
-                x: 34
-                y: 68
-                width: 201
-                height: 53
-                text: qsTr("Proveedores")
-                autoRepeat: false
-                flat: false
-
-                onClicked: {
-                    Js.getRequester("http://localhost:8095/rest/proveedor/all", function(json){
-                        libraryModel.clear();
-                        json.forEach(function(item){
-                            libraryModel.append(item);
-                        });
-                        print(json[0].name);
-                    });
-                }
-            }
-
-            ListModel {
-                id: libraryModel
-                ListElement {
-                    name: "Ada Pacheco"
-                    firstName: "Ada Haydee"
-                    lastName: "Pacheco Ismodes"
-                }
-                ListElement {
-                    name: "Segunto Ticona"
-                    firstName: "Godofredo Segundo"
-                    lastName: "Ticona Valdivia"
-                }
-
-            }
-
-            TableView {
-                id: tableView
-                x: 10
-                y: 179
-                width: 450
-                TableViewColumn {
-                    role: "name"
-                    title: "Name"
-                    width: 100
-                }
-                TableViewColumn {
-                    role: "firstName"
-                    title: "Firstname"
-                    width: 150
-                }
-                TableViewColumn {
-                    role: "lastName"
-                    title: "Lastname"
-                    width: 150
-                }
-                model: libraryModel
-            }
-
-
+        FormSerie {
+            id: frmSerie
+            series: modelKardexSeries
         }
 
-        Page2Form {
-        }
     }
 }

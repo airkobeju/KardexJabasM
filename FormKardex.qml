@@ -1,7 +1,5 @@
 ﻿import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Controls 1.2
-import QtQuick.Controls.Styles 1.4
 import "js/commons.js" as Js
 import "utils" as Jc
 
@@ -9,11 +7,13 @@ Page {
     id: page
     title: qsTr("Kardex")
 
+    property variant selectedProveedor: null
     property alias proveedores: finder.list
     property var pesos: []
     property bool isBoletaCreate: false
     property string idBoleta: ""
     property var lastEntrySaved
+    property ListModel series: ListModel{}
 
     signal entrySaved( var lastEntrySaved )
 
@@ -26,12 +26,23 @@ Page {
         txtCantidad.focus=true;
     }
 
-    function createBoleta(){
-        Js.createKardexEntry({
-                                 "fecha":txtFecha.text,
-                                 "proveedorId":proveedores.get(finder.indexSelected).id,
-                                 "pesos":pesos
-                             }, function(obj){
+    function createBoleta() {
+        if(selectedProveedor == null){
+            print("No se seleccionó algun proveedor.");
+            return;
+        }
+
+        var serie_id = series.get(cmbSeries.currentIndex).id;
+
+        var kardex_entry = {
+            "fecha":txtFecha.text,
+            "serieId": serie_id,
+            "proveedorId":selectedProveedor.id,
+            "pesos":pesos
+        };
+
+        Js.createKardexEntry(kardex_entry,
+                             function(obj){
                                  //señal
                                  entrySaved(obj);
                                  finder.clear("Proveedores");
@@ -63,6 +74,9 @@ Page {
         anchors.top: parent.top
         anchors.topMargin: 55
         font.pointSize: 14
+        onItemSelected: {
+            selectedProveedor = item;
+        }
     }
 
     TextField {
@@ -99,7 +113,7 @@ Page {
 //        }
     }
 
-    TableView {
+    Jc.JTableView {
         id: twPesos
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 26
@@ -110,16 +124,14 @@ Page {
         anchors.top: txtCantidad.bottom
         anchors.topMargin: 6
 
-        TableViewColumn{
-            role: "cantidad"
-            title: "Cantidad"
-            width: 180
-        }
-        TableViewColumn{
-            role: "peso"
-            title: "Peso"
-            width: 380
-        }
+        header: [
+            Jc.JTableColum {text: "Cantidad"; width: 180},
+            Jc.JTableColum {text: "Peso"; width: 380 }
+        ]
+        rowFields: [
+            "model.cantidad", "model.peso"
+        ]
+        delegate: Jc.JItemListView{}
         model: pesosModel
     }
 
@@ -156,18 +168,25 @@ Page {
         x: 132
         width: 100
         height: 40
-        style: ButtonStyle {
-            background: Rectangle {
-                implicitWidth: 100
-                implicitHeight: 25
-                border.width: control.activeFocus ? 2 : 1
-                border.color: "#888"
-                radius: 4
-                gradient: Gradient {
-                    GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
-                    GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
-                }
-            }
+
+        contentItem: Text {
+            text: btnKardexSave.text
+            font: btnKardexSave.font
+            opacity: enabled ? 1.0 : 0.3
+            color: btnKardexSave.down ? "#b6b6b6" : "#e3e3e3"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+        }
+
+        background: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 40
+            color: "#009eff"
+            opacity: enabled ? 0.5 : 0.3
+            border.color: "#002bff"
+            border.width: 1
+            radius: 2
         }
 
         text: qsTr("Guardar")
@@ -204,16 +223,19 @@ Page {
 
     ComboBox {
         id: cmbSeries
+        textRole: "value"
         x: 259
         y: 5
         width: 70
         height: 40
         anchors.right: btnKardexSave.left
         anchors.rightMargin: 160
+        model: series
+        currentIndex: 0
     }
 
     TextField {
-        id: txtSerie
+        id: txtNumeracion
         y: 5
         width: 151
         height: 40

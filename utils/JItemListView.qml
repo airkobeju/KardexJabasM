@@ -10,10 +10,12 @@ Item {
     property alias itemFields:___row.children
 
     Component.onCompleted: {
-        print("File: JItemListView->onCompleted");
+        //print("File: JItemListView->onCompleted");
         var strObj = "";
         for(var i=0; i<header.length;i++){
-            strObj ='import QtQuick 2.12 \n Text { width: '+header[i].width+'; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  " "+'+rowFields[i]+' }';
+            var _txt = "";
+            _txt = rowFields[i];
+            strObj ='import QtQuick 2.12 \n Text { text: '+_txt+';clip:true; elide: Text.ElideRight; width: header[' + i + '].width; height: parent.height; verticalAlignment: Text.AlignVCenter }';
             //print(strObj);
             Qt.createQmlObject(strObj, ___row);
         }

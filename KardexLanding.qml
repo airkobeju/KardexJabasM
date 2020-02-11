@@ -1,103 +1,52 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Controls 1.2
+import "utils" as Jc
 import "js/commons.js" as Js
 
 Page {
-    id: page
-    title: qsTr("Kardex Home")
+    id:__kardexLanding
+    title: qsTr("Kardex Entradas")
 
-    function addEntry(entry){
-        //kardexModel.append(entry);
-        kardexModel.insert(0,entry);
-    }
+    property alias modelEntries: __tableview.model
 
     Component.onCompleted: {
-        Js.getRequester("http://localhost:8095/rest/kardex/all", function(json){
-            kardexModel.clear();
-            json.forEach(function(item){
-                kardexModel.append(item);
-            });
-        });
+        print("File: FormBoleta->onCompleted");
+        //        print("__tableview.header: "+__tableview.header.length);
+//        Js.getRequester("http://localhost:8095/rest/kardex/all", function(json){
+//            //print("Kardex cargado. largo: "+ json.length);
+//            json.forEach(function(item){
+//                __tableview.model.append(item);
+//            });
+
+//        });
+
     }
 
-    ListModel{
-        id: kardexModel
-//        ListElement{
-//            fecha: "2019-12-18"
-//            proveedor: "Mia T."
-//            Recepción: 15
-//            Entrega: 15
-//        }
+    function addEntry(entry) {
+        //kardexModel.append(entry);
+        __tableview.model.insert(0,entry);
     }
 
-    TableView {
-        id: twKardex
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 5
-        anchors.right: parent.right
-        anchors.rightMargin: 5
-        anchors.left: parent.left
-        anchors.leftMargin: 5
-        anchors.top: parent.top
-        anchors.topMargin: 6
+    Jc.JTableView {
+        id: __tableview
+        anchors.fill: parent
+        anchors.margins: 10
+        header: [
+            Jc.JTableColum {text: "Fecha"; width: 110},
+            Jc.JTableColum {text: "Serie"; width: 80},
+            Jc.JTableColum {text: "Proveedor"; width: 200 },
+            Jc.JTableColum {text: "Recepcion"; width: 100 },
+            Jc.JTableColum {text: "Devolución"; width: 100 }
+        ]
+        rowFields: [
+            "model.fecha","model.serie.value", "model.proveedor.name", "model.jabaRecepcionada", "model.jabaEntregada"
+        ]
+        delegate: Jc.JItemListView{}
 
-        TableViewColumn{
-            role: "fecha"
-            title: "Fecha"
-            width: 100
-            delegate: Text {
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                text: model.fecha
-            }
-        }
-        TableViewColumn{
-            role: "proveedor"
-            title: "Proveedor"
-            width: 130
-            delegate: Text {
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                text: model.proveedor.name
-            }
-        }
-        TableViewColumn{
-            role: "jabaRecepcionada"
-            title: "Recepción"
-            width: 100
-            delegate: Text {
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                text: model.jabaRecepcionada
-            }
-        }
-        TableViewColumn{
-            role: "jabaEntregada"
-            title: "Entrega"
-            width: 100
-            delegate: Text {
-                anchors.left: parent.left
-                anchors.leftMargin: 10
-                text: model.jabaEntregada
-            }
-        }
-        itemDelegate: Rectangle {clip: true}
-        model: kardexModel
-
-        onDoubleClicked: {
-            var entryId = kardexModel.get(twKardex.currentRow).id;
-            console.info( "Entry ID: "+ entryId );
+        onClickView: {
+            print("Proveedor ID: "+model.proveedor.id);
         }
 
     }
 
 }
-
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}D{i:1;anchors_x:0;anchors_y:0}D{i:2;anchors_x:126}
-D{i:3;anchors_x:2;anchors_y:32}D{i:4;anchors_x:102}D{i:5;anchors_x:7;anchors_y:67}
-D{i:6;anchors_x:107}
-}
-##^##*/

@@ -10,7 +10,6 @@
         <file>utils/JTextFinder.qml</file>
         <file>KardexLanding.qml</file>
         <file>FormSerie.qml</file>
-        <file>FormBoleta.qml</file>
         <file>utils/JTableView.qml</file>
         <file>utils/JItemListView.qml</file>
         <file>imgs/view_icon.png</file>

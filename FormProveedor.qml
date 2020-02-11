@@ -7,15 +7,15 @@ Page {
     id: page
     title: qsTr("Proveedor")
 
-    property var proveedores:[]
+    property ListModel proveedores: ListModel{}
 
     Component.onCompleted: {
-        Js.getRequester("http://localhost:8095/rest/proveedor/all", function(json){
-            proveedorModel.clear();
-            json.forEach(function(item){
-                proveedorModel.append(item);
-            });
-        });
+//        Js.getRequester("http://localhost:8095/rest/proveedor/all", function(json){
+//            proveedorModel.clear();
+//            json.forEach(function(item){
+//                proveedorModel.append(item);
+//            });
+//        });
     }
 
     Button {
@@ -29,8 +29,8 @@ Page {
                                  "firstName":txtFirstname.text,
                                  "lastName":txtLastname.text
                              }, function(prov){
-                                 proveedorModel.append(prov);
-                                 proveedores[proveedores.length] = prov;
+                                 proveedores.append(prov);
+                                 //proveedores[proveedores.length] = prov;
                              });
             txtName.clear();
             txtFirstname.clear();
@@ -112,14 +112,6 @@ Page {
         anchors.verticalCenter: lblLastname.verticalCenter
     }
 
-    ListModel {
-        id: proveedorModel
-//        ListElement {
-//            name: "Ada Pacheco"
-//            firstName: "Ada Haydee"
-//            lastName: "Pacheco Ismodes"
-//        }
-    }
 
     TableView {
         id: tableView
@@ -146,7 +138,7 @@ Page {
             title: "Lastname"
             width: 150
         }
-        model: proveedorModel
+        model: proveedores
     }
 
 }
