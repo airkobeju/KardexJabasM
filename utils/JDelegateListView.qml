@@ -4,7 +4,7 @@ import QtQml 2.12
 import "../imgs"
 
 Item {
-    id: __jitemListView
+    id: __jdelegateListView
 
     property bool isSelected: false
     property alias itemFields:___row.children
@@ -12,7 +12,6 @@ Item {
     Component.onCompleted: {
         //print("File: JItemListView->onCompleted");
         var strObj = "";
-        print(parent.objectName);
         for(var i=0; i<header.length;i++){
             var _txt = "";
             _txt = rowFields[i];
@@ -46,29 +45,4 @@ Item {
             doubleClick(index);
         }
     }
-
-    RoundButton {
-        id: roundButton
-        z:3
-        focus: false
-        x: parent.width+10
-        y: (parent.height-roundButton.height)/2
-        display: AbstractButton.IconOnly
-        icon.source: "../imgs/view_icon.png"
-
-        onClicked: {
-            clickView(model);
-        }
-    }
-
-    states: [
-        State {
-            name: "unselected"
-            PropertyChanges {
-                target: roundButton
-                x: parent.width-(this.width+10)
-            }
-            when: focus || roundButton.focus
-        }
-    ]
 }

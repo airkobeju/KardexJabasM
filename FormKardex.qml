@@ -5,7 +5,8 @@ import "utils" as Jc
 
 Page {
     id: page
-    title: qsTr("Kardex")
+    objectName: "FormKardex"
+    title: qsTr("Crear Boleta")
 
     property variant selectedProveedor: null
     property alias proveedores: finder.list
@@ -13,7 +14,8 @@ Page {
     property bool isBoletaCreate: false
     property string idBoleta: ""
     property var lastEntrySaved
-    property ListModel series: ListModel{}
+    //property ListModel series: ListModel{}
+    property alias series: cmbSeries.model
 
     signal entrySaved( var lastEntrySaved )
 
@@ -131,7 +133,7 @@ Page {
         rowFields: [
             "model.cantidad", "model.peso"
         ]
-        delegate: Jc.JItemListView{}
+        //delegate: Jc.JItemListView{}
         model: pesosModel
     }
 

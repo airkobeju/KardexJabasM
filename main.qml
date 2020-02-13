@@ -9,18 +9,15 @@ ApplicationWindow {
     property var proveedorList
     property var kardexModel: []
 
-    function replyFinished(strjson, model) {
-        var json = JSON.parse(strjson);
-        print("json DataType: "+ typeof json);
-        json.forEach(function(item,index){
-            model.append(item);
-        });
-    }
-
     Component.onCompleted: {
         gcProveedores.send();
         getControllerKardex.send();
         getControllerKardexSeries.send();
+
+        ldrKardexLanding.sourceComponent = cmp_KardexLanding;
+        ldrFormKardex.sourceComponent = cmp_FormKardex;
+        ldrFormProveedor.sourceComponent = cmp_FormProveedor;
+        ldrFormSerie.sourceComponent = cmp_FormSerie;
     }
 
     visible: true
@@ -28,7 +25,10 @@ ApplicationWindow {
     height: 480
     title: qsTr("Tabs")
 
+
+    property string titlePage: ""
     property ListModel modelKardexSeries: ListModel{}
+    property ListModel modelKardexLanding: ListModel{}
     property ListModel modelProveedores: ListModel{}
 
     Drawer{
@@ -40,7 +40,7 @@ ApplicationWindow {
             anchors.fill: parent
 
             ItemDelegate {
-                text: qsTr(kardexLanding.title)
+                text: qsTr(titlePage)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 0;
@@ -49,7 +49,7 @@ ApplicationWindow {
             }
 
             ItemDelegate {
-                text: qsTr(frmProveedor.title)
+                text: qsTr(titlePage)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 1;
@@ -58,7 +58,7 @@ ApplicationWindow {
             }
 
             ItemDelegate {
-                text: qsTr(frmKardex.title)
+                text: qsTr(titlePage)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 2;
@@ -67,7 +67,7 @@ ApplicationWindow {
             }
 
             ItemDelegate {
-                text: qsTr(frmSerie.title)
+                text: qsTr(titlePage)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 3;
@@ -91,7 +91,7 @@ ApplicationWindow {
         }
 
         Label {
-            text: swipeView.currentItem.title
+            text: titlePage
             anchors.centerIn: parent
         }
     }
@@ -99,55 +99,34 @@ ApplicationWindow {
     GetController {
         id: gcProveedores
         url: "http://localhost:8095/rest/proveedor/all"
-        onReplyFinished: {
-            var json = JSON.parse(strJson);
-            print("json DataType: "+ typeof json);
-            json.forEach(function(item,index){
-                modelProveedores.append(item);
-            });
-        }
+        onReplyFinished: Js.replyFinished(strJson, modelProveedores)
     }
 
     GetController {
         id: getControllerKardex
         url: "http://localhost:8095/rest/kardex/all"
-        onReplyFinished: {
-            var json = JSON.parse(strJson);
-            print("json DataType: "+ typeof json);
-            json.forEach(function(item,index){
-                kardexLanding.modelEntries.append(item);
-            });
-        }
+        onReplyFinished: Js.replyFinished(strJson, modelKardexLanding);
     }
 
     GetController {
         id: getControllerKardexSeries
         url: "http://localhost:8095/rest/kardexserie/all"
-        onReplyFinished: {
-            var json = JSON.parse(strJson);
-            print("json DataType: "+ typeof json);
-            json.forEach(function(item,index){
-                modelKardexSeries.append(item);
-            });
-
-        }
+        onReplyFinished: Js.replyFinished(strJson, modelKardexSeries);
     }
 
-    SwipeView {
-        id: swipeView
-        anchors.fill: parent
-        currentIndex: 0
-
+    Component {
+        id: cmp_KardexLanding
         KardexLanding{
             id: kardexLanding
+            modelEntries: modelKardexLanding
+            Component.onCompleted: {
+                print("#### KardexLanding");
+            }
         }
-
-        FormProveedor{
-            id: frmProveedor
-            proveedores: modelProveedores
-        }
-
-        FormKardex{
+    }
+    Component {
+        id: cmp_FormKardex
+        FormKardex {
             id: frmKardex
             series: modelKardexSeries
             proveedores: modelProveedores
@@ -155,12 +134,53 @@ ApplicationWindow {
             onEntrySaved: function(obj){
                 kardexLanding.addEntry(obj);
             }
+            Component.onCompleted: {
+                print("#### FormKardex");
+            }
         }
-
+    }
+    Component {
+        id: cmp_FormProveedor
+        FormProveedor{
+            id: frmProveedor
+            proveedores: modelProveedores
+            Component.onCompleted: {
+                print("#### FormProveedor");
+            }
+        }
+    }
+    Component {
+        id: cmp_FormSerie
         FormSerie {
             id: frmSerie
             series: modelKardexSeries
+            Component.onCompleted: {
+                print("#### FormSerie");
+            }
+        }
+    }
+
+    SwipeView {
+        id: swipeView
+        anchors.fill: parent
+        //currentIndex: 0
+
+        onChildrenChanged: {
+            titlePage = swipeView.currentItem.title;
         }
 
+
+        Loader {
+            id: ldrKardexLanding
+        }
+        Loader {
+            id: ldrFormKardex
+        }
+        Loader {
+            id: ldrFormProveedor
+        }
+        Loader {
+            id: ldrFormSerie
+        }
     }
 }

@@ -75,3 +75,11 @@ function createSerieEntry(entry, fnt){
     xhr.send(JSON.stringify(entry));
 }
 
+function replyFinished(strjson, model) {
+    var json = JSON.parse(strjson);
+    print("json.length"+ json.length);
+    json.forEach(function(item,index){
+        model.append(item);
+    });
+    print("modelo cargado");
+}

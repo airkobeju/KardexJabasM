@@ -6,10 +6,12 @@ import "utils" as Jc
 Page {
     id: frmSerie
     title: qsTr("Series")
+    objectName: "FormSerie"
 
     property alias series: jtvFrmSerieSeries.model
 
     Component.onCompleted: {
+        print("#=#=#=#=#=#=FormSerie=#=#=#=#=#=#=#");
 //        Js.getRequester("http://localhost:8095/rest/kardexserie/all", function(json){
 //            print("===Series cargadas===");
 //            json.forEach(function(item, index){
@@ -76,6 +78,9 @@ Page {
             font.pointSize: 14
             placeholderText: "Nota"
         }
+        Component.onCompleted: {
+            print("******RectangleNOTA*****");
+        }
     }
 
     Jc.JTableView {
@@ -97,7 +102,9 @@ Page {
             "model.value", "model.note"
         ]
         delegate: Jc.JItemListView{}
-
+        Component.onCompleted: {
+            print("*******FormSerie->JtableView*********");
+        }
     }
 
 

@@ -14,5 +14,8 @@
         <file>utils/JItemListView.qml</file>
         <file>imgs/view_icon.png</file>
         <file>utils/JTableColum.qml</file>
+        <file>imgs/edit_icon.png</file>
+        <file>ViewKardex.qml</file>
+        <file>utils/JDelegateListView.qml</file>
     </qresource>
 </RCC>
