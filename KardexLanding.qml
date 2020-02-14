@@ -2,11 +2,13 @@ import QtQuick 2.12
 import QtQuick.Controls 2.5
 import "utils" as Jc
 import "js/commons.js" as Js
+import "imgs"
 
 Page {
     id:__kardexLanding
     objectName: "kardexLanding"
     title: qsTr("Kardex Entradas")
+    state: ""
 
     property alias modelEntries: __tableview.model
 
@@ -30,11 +32,53 @@ Page {
             Jc.JTableColum {text: "Recepcion"; width: 100 },
             Jc.JTableColum {text: "Devolución"; width: 100 }
         ]
-        rowFields: [
-            "model.fecha","model.serie.value", "model.proveedor.name", "model.jabaRecepcionada", "model.jabaEntregada"
-        ]
+        delegate: Item {
+            height: 40
+            width: parent.width
 
-        delegate: Jc.JItemListView{}
+            property bool isSelected: false
+
+            Row {
+                z:1
+                anchors.fill : parent
+                Text { leftPadding: 10; width: 110; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.fecha }
+                Text { leftPadding: 10; width: 80; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.serie===undefined?'-':model.serie.value}
+                Text { leftPadding: 10; width: 200; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.proveedor.name }
+                Text { leftPadding: 10; width: 100; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.jabaRecepcionada }
+                Text { leftPadding: 10; width: 100; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.jabaEntregada }
+            }
+            MouseArea {
+                z:2
+                anchors.fill : parent
+                onClicked: {
+                    //click(index);
+                    parent.parent.parent.currentIndex = index;
+                }
+            }
+            RoundButton {
+                id: rbtnActionItem
+                z:3
+                focus: false
+                x: parent.width+(this.width+10)
+                y: (parent.height-this.height)/2
+                display: AbstractButton.IconOnly
+                icon.source: "imgs/view_icon.png"
+
+                onClicked: {
+                    parent.parent.parent.parent.clickView(model);
+                }
+            }
+            states: [
+                State {
+                    name: "unselected"
+                    PropertyChanges {
+                        target: rbtnActionItem
+                        x: parent.width-(this.width+10)
+                    }
+                    when: focus || rbtnActionItem.focus
+                }
+            ]
+        }
 
         onClickView: {
             print("Abriendo viewKardex");
@@ -69,6 +113,7 @@ Page {
         }
 
     }
+
 
     Rectangle {
         id: rectangle

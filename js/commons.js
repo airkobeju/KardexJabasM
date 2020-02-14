@@ -82,4 +82,6 @@ function replyFinished(strjson, model) {
         model.append(item);
     });
     print("modelo cargado");
+    if(arguments.length === 3)
+        arguments[2](json);
 }

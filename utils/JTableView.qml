@@ -3,10 +3,19 @@ import QtQuick 2.12
 Rectangle {
     id: _jTableView
 
-    property ListModel model: ListModel{}
+    property ListModel model: ListModel{
+        onRowsInserted: {
+            print("+dato agregado+");
+        }
+        onCountChanged: {
+            print("Largo nuevo: " + this.count);
+        }
+    }
     property int headerHeight: 40
     property list<Item> header
-    property Component delegate:JItemListView{}
+    //property Component delegate
+    property alias delegate: __list.delegate
+
     property variant rowFields:[]
     property int margin: 2
 
@@ -18,74 +27,73 @@ Rectangle {
     border.color: "#2c2a2a"
     clip: true
 
-    function initComponentContent(){
-        l_header.sourceComponent = rec_jtable_header;
-        l_ListView.sourceComponent = _c__list;
-    }
-
     Component.onCompleted: {
         print("File: JTableView->onCompleted | objectName: "+parent.objectName);
         print("==cargando componente de lista");
-        initComponentContent();
+//        __list.model = model;
+//        __list.delegate= delegate;
     }
 
-    Component {
-        id: rec_jtable_header
-        Rectangle {
-            color: "#7e7676"
-            radius: 5
-            anchors.fill: parent
-            clip: true
-            z:6
+    Binding{
+        target: __list
+        property: "model"
+        value: model
+    }
+//    Binding{
+//        target: __list
+//        property: "delegate"
+//        value: delegate
+//    }
 
-            Row {
-                id:__jtable_header
-                objectName: "headerContainer"
-                anchors.top: parent.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: headerHeight
-                clip: true
-            }
-            Component.onCompleted: print("-Rectangulo de la cabecera-")
+    ListView {
+        id: __list
+        objectName: "@listView"
+        anchors.fill: parent
+        anchors.margins: margin+2
+        anchors.topMargin: headerHeight+5
+        currentIndex: 0
+
+        highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+        focus: true
+
+        Component.onCompleted: {
+            print("-Lista creada-")
+        }
+
+        onModelChanged: {
+            print("model.length: "+this.model.length);
+            print("el modelo ha cambiado");
+        }
+
+        onCurrentIndexChanged: {
         }
     }
 
-    Loader {
-        id: l_header
-        height: 30
+    Rectangle {
+        objectName: "Rectangle Container Header"
+        color: "#7e7676"
+        height: headerHeight
+        radius: 5
         anchors.right: parent.right
         anchors.rightMargin: margin
         anchors.left: parent.left
         anchors.leftMargin: margin
         anchors.top: parent.top
         anchors.topMargin: margin
-    }
+        clip: true
+        z:6
 
-    Component {
-        id: _c__list
-
-        ListView {
-            id: __list
-            objectName: "listView"
-            anchors.fill: parent
-            model: model
-            delegate: delegate
-            highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
-            focus: true
-            onModelChanged: {
-            }
-            onCurrentIndexChanged: {
-            }
-            Component.onCompleted: print("-Lista creada-")
+        Row {
+            id:__jtable_header
+            objectName: "headerContainer"
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: headerHeight
+            clip: true
+            children: header
         }
-    }
-
-    Loader {
-        id: l_ListView
-        anchors.fill: parent
-        anchors.margins: margin+2
-        anchors.topMargin: __jtable_header.height+5
+        Component.onCompleted: print("-Rectangulo de la cabecera-")
     }
 
 

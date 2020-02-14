@@ -13,7 +13,7 @@ Page {
     property string proveedorName: "Juan T."
     property string jabaEntregada: "0"
     property string jabaRecepcionada: "0"
-    property ListModel modelPesos: ListModel{}
+    property alias modelPesos: jTableView.model
     opacity: 1
 
     Label {
@@ -67,15 +67,56 @@ Page {
         anchors.leftMargin: 5
         anchors.top: lblProveedor.bottom
         anchors.topMargin: 10
-
         header: [
             Ut.JTableColum {text: "Cantidad"; width: 180},
             Ut.JTableColum {text: "Peso"; width: 380 }
         ]
-        rowFields: [
-            "model.cantidad", "model.peso"
-        ]
-        delegate: Ut.JItemListView{}
+        delegate: Item {
+            height: 40
+            width: parent.width
+
+            property bool isSelected: false
+
+            Row {
+                z:1
+                anchors.fill : parent
+                Text { leftPadding: 10; width: 180; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.cantidad }
+                Text { leftPadding: 10; width: 380; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.peso===undefined?'-':model.peso}
+            }
+            MouseArea {
+                z:2
+                anchors.fill : parent
+                onClicked: {
+                    //click(index);
+                    parent.parent.parent.currentIndex = index;
+                }
+            }
+            RoundButton {
+                id: rbtnActionItem
+                z:3
+                focus: false
+                x: parent.width+(this.width+10)
+                y: (parent.height-this.height)/2
+                display: AbstractButton.IconOnly
+                icon.source: "imgs/edit_icon.png"
+
+                onClicked: {
+                    //parent.parent.parent.parent.clickView(model);
+                    print("Editar peso");
+                }
+            }
+            states: [
+                State {
+                    name: "unselected"
+                    PropertyChanges {
+                        target: rbtnActionItem
+                        x: parent.width-(this.width+10)
+                    }
+                    when: focus || rbtnActionItem.focus
+                }
+            ]
+        }
+
         model: modelPesos
     }
 

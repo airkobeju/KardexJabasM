@@ -13,11 +13,10 @@ Item {
         //print("File: JItemListView->onCompleted");
         var strObj = "";
         print(parent.objectName);
-        for(var i=0; i<header.length;i++){
-            var _txt = "";
-            _txt = rowFields[i];
-            strObj ='import QtQuick 2.12 \n Text { text: '+_txt+';clip:true; elide: Text.ElideRight; width: header[' + i + '].width; height: parent.height; verticalAlignment: Text.AlignVCenter }';
-            //print(strObj);
+        for(var i=0; i<rowFields.length;i++){
+            strObj ='import QtQuick 2.12 \n Text { text: '+rowFields[i]+
+                    ';clip:true; width: header[' + i + '].width; height: parent.height; verticalAlignment: Text.AlignVCenter }';
+            //print("\n"+strObj);
             Qt.createQmlObject(strObj, ___row);
         }
     }
@@ -31,7 +30,7 @@ Item {
         anchors.fill: parent
         leftPadding: 10
  //       Text { width: 120; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.fecha }
-//        Text { width: __col2.width; text: model.proveedor.name }
+//        Text { width: __col2.width; text: model.proveedor.name }        
     }
 
     MouseArea {

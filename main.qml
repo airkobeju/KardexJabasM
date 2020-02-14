@@ -13,11 +13,6 @@ ApplicationWindow {
         gcProveedores.send();
         getControllerKardex.send();
         getControllerKardexSeries.send();
-
-        ldrKardexLanding.sourceComponent = cmp_KardexLanding;
-        ldrFormKardex.sourceComponent = cmp_FormKardex;
-        ldrFormProveedor.sourceComponent = cmp_FormProveedor;
-        ldrFormSerie.sourceComponent = cmp_FormSerie;
     }
 
     visible: true
@@ -25,8 +20,6 @@ ApplicationWindow {
     height: 480
     title: qsTr("Tabs")
 
-
-    property string titlePage: ""
     property ListModel modelKardexSeries: ListModel{}
     property ListModel modelKardexLanding: ListModel{}
     property ListModel modelProveedores: ListModel{}
@@ -40,7 +33,7 @@ ApplicationWindow {
             anchors.fill: parent
 
             ItemDelegate {
-                text: qsTr(titlePage)
+                text: qsTr(kardexLanding.title)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 0;
@@ -48,32 +41,32 @@ ApplicationWindow {
                 }
             }
 
-            ItemDelegate {
-                text: qsTr(titlePage)
-                width: parent.width
-                onClicked: {
-                    swipeView.currentIndex = 1;
-                    drawer.close()
-                }
-            }
+//            ItemDelegate {
+//                text: qsTr(frmKardex.title)
+//                width: parent.width
+//                onClicked: {
+//                    swipeView.currentIndex = 1;
+//                    drawer.close()
+//                }
+//            }
 
-            ItemDelegate {
-                text: qsTr(titlePage)
-                width: parent.width
-                onClicked: {
-                    swipeView.currentIndex = 2;
-                    drawer.close()
-                }
-            }
+//            ItemDelegate {
+//                text: qsTr(frmProveedor.title)
+//                width: parent.width
+//                onClicked: {
+//                    swipeView.currentIndex = 2;
+//                    drawer.close()
+//                }
+//            }
 
-            ItemDelegate {
-                text: qsTr(titlePage)
-                width: parent.width
-                onClicked: {
-                    swipeView.currentIndex = 3;
-                    drawer.close()
-                }
-            }
+//            ItemDelegate {
+//                text: qsTr(frmSerie.title)
+//                width: parent.width
+//                onClicked: {
+//                    swipeView.currentIndex = 3;
+//                    drawer.close()
+//                }
+//            }
 
         }
     }
@@ -91,7 +84,7 @@ ApplicationWindow {
         }
 
         Label {
-            text: titlePage
+            text: swipeView.currentItem.title
             anchors.centerIn: parent
         }
     }
@@ -105,7 +98,7 @@ ApplicationWindow {
     GetController {
         id: getControllerKardex
         url: "http://localhost:8095/rest/kardex/all"
-        onReplyFinished: Js.replyFinished(strJson, modelKardexLanding);
+        onReplyFinished: Js.replyFinished(strJson, kardexLanding.modelEntries)
     }
 
     GetController {
@@ -114,73 +107,47 @@ ApplicationWindow {
         onReplyFinished: Js.replyFinished(strJson, modelKardexSeries);
     }
 
-    Component {
-        id: cmp_KardexLanding
+    SwipeView {
+        id: swipeView
+        anchors.fill: parent
+        currentIndex: 0
+
         KardexLanding{
             id: kardexLanding
-            modelEntries: modelKardexLanding
+            //modelEntries: modelKardexLanding
             Component.onCompleted: {
                 print("#### KardexLanding");
             }
         }
-    }
-    Component {
-        id: cmp_FormKardex
-        FormKardex {
-            id: frmKardex
-            series: modelKardexSeries
-            proveedores: modelProveedores
 
-            onEntrySaved: function(obj){
-                kardexLanding.addEntry(obj);
-            }
-            Component.onCompleted: {
-                print("#### FormKardex");
-            }
-        }
-    }
-    Component {
-        id: cmp_FormProveedor
-        FormProveedor{
-            id: frmProveedor
-            proveedores: modelProveedores
-            Component.onCompleted: {
-                print("#### FormProveedor");
-            }
-        }
-    }
-    Component {
-        id: cmp_FormSerie
-        FormSerie {
-            id: frmSerie
-            series: modelKardexSeries
-            Component.onCompleted: {
-                print("#### FormSerie");
-            }
-        }
-    }
+//        FormKardex {
+//            id: frmKardex
+//            series: modelKardexSeries
+//            proveedores: modelProveedores
 
-    SwipeView {
-        id: swipeView
-        anchors.fill: parent
-        //currentIndex: 0
+//            onEntrySaved: function(obj){
+//                kardexLanding.addEntry(obj);
+//            }
+//            Component.onCompleted: {
+//                print("#### FormKardex");
+//            }
+//        }
 
-        onChildrenChanged: {
-            titlePage = swipeView.currentItem.title;
-        }
+//        FormProveedor{
+//            id: frmProveedor
+//            proveedores: modelProveedores
+//            Component.onCompleted: {
+//                print("#### FormProveedor");
+//            }
+//        }
 
+//        FormSerie {
+//            id: frmSerie
+//            series: modelKardexSeries
+//            Component.onCompleted: {
+//                print("#### KardexLanding");
+//            }
+//        }
 
-        Loader {
-            id: ldrKardexLanding
-        }
-        Loader {
-            id: ldrFormKardex
-        }
-        Loader {
-            id: ldrFormProveedor
-        }
-        Loader {
-            id: ldrFormSerie
-        }
     }
 }
