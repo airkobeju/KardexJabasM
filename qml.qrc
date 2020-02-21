@@ -17,5 +17,6 @@
         <file>imgs/edit_icon.png</file>
         <file>ViewKardex.qml</file>
         <file>utils/JDelegateListView.qml</file>
+        <file>imgs/save_icon.png</file>
     </qresource>
 </RCC>

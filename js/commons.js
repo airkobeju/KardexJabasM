@@ -75,6 +75,20 @@ function createSerieEntry(entry, fnt){
     xhr.send(JSON.stringify(entry));
 }
 
+function updatePeso(objPeso, fnt){
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+            //print('HEADERS_RECEIVED');
+        } else if(xhr.readyState === XMLHttpRequest.DONE) {
+            //print('DONE');
+            fnt(JSON.parse(xhr.responseText.toString()));
+        }
+    };
+    xhr.open("PUT", "http://localhost:8095/rest/itemkardexdetail/save", true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(objPeso));
+}
+
 function replyFinished(strjson, model) {
     var json = JSON.parse(strjson);
     print("json.length"+ json.length);

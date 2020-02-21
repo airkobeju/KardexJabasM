@@ -118,6 +118,7 @@ ApplicationWindow {
             Component.onCompleted: {
                 print("#### KardexLanding");
             }
+
         }
 
 //        FormKardex {

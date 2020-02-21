@@ -53,7 +53,17 @@ Rectangle {
         anchors.topMargin: headerHeight+5
         currentIndex: 0
 
-        highlight: Rectangle { color: "lightsteelblue"; radius: 5 }
+        highlight: Rectangle {
+            color: "lightsteelblue"
+            radius: 5
+            Behavior on y {
+                  NumberAnimation { easing.type: Easing.InOutElastic; easing.amplitude: 3.0; easing.period: 2.0; duration: 300 }
+              }
+        }
+        highlightFollowsCurrentItem: true
+        highlightMoveDuration: 500
+        highlightMoveVelocity: 400
+
         focus: true
 
         Component.onCompleted: {

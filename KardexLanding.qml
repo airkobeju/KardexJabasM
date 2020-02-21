@@ -26,11 +26,12 @@ Page {
         anchors.fill: parent
         anchors.margins: 10
         header: [
-            Jc.JTableColum {text: "Fecha"; width: 110},
-            Jc.JTableColum {text: "Serie"; width: 80},
-            Jc.JTableColum {text: "Proveedor"; width: 200 },
-            Jc.JTableColum {text: "Recepcion"; width: 100 },
-            Jc.JTableColum {text: "Devolución"; width: 100 }
+            Jc.JTableColum {text: qsTr("Fecha"); width: 110},
+            Jc.JTableColum {text: qsTr("Serie"); width: 70},
+            Jc.JTableColum {text: qsTr("Numeración"); width: 80},
+            Jc.JTableColum {text: qsTr("Proveedor"); width: 200 },
+            Jc.JTableColum {text: qsTr("Recepcion"); width: 100 },
+            Jc.JTableColum {text: qsTr("Devolución"); width: 100 }
         ]
         delegate: Item {
             height: 40
@@ -42,7 +43,10 @@ Page {
                 z:1
                 anchors.fill : parent
                 Text { leftPadding: 10; width: 110; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.fecha }
-                Text { leftPadding: 10; width: 80; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.serie===undefined?'-':model.serie.value}
+                Text { leftPadding: 10; width: 70; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.serie===undefined?'-':model.serie.value}
+                Text { leftPadding: 10; width: 80; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.numeracion===undefined?'-':model.numeracion
+                    wrapMode: Text.WrapAnywhere; elide: Text.ElideRight
+                }
                 Text { leftPadding: 10; width: 200; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.proveedor.name }
                 Text { leftPadding: 10; width: 100; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.jabaRecepcionada }
                 Text { leftPadding: 10; width: 100; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  model.jabaEntregada }

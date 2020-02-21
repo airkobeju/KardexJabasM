@@ -3,14 +3,14 @@ import QtQuick 2.12
 Item {
     id: __jtable_colum
     objectName: "JTableColum"
-    width: 300
+    implicitWidth: 200
     height: parent.height
+    property alias text: __jtable_colum_text.text
 
     Component.onCompleted: {
         print(parent.objectName);
     }
 
-    property alias text: __jtable_colum_text.text
 
     Rectangle {
         id: __jtable_colum_control
@@ -22,8 +22,19 @@ Item {
         Text{
             id:__jtable_colum_text
             color: "#ffffff"
-            anchors.centerIn: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.parent.width-parent.anchors.rightMargin
+
         }
     }
 
 }
+
+/*##^##
+Designer {
+    D{i:0;height:40;width:200}
+}
+##^##*/
