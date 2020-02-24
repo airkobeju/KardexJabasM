@@ -99,3 +99,17 @@ function replyFinished(strjson, model) {
     if(arguments.length === 3)
         arguments[2](json);
 }
+
+function saveTipoJaba(tipo_jaba, fnt){
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+            //print('HEADERS_RECEIVED');
+        } else if(xhr.readyState === XMLHttpRequest.DONE) {
+            print('TipoJaba guardado.');
+            fnt(JSON.parse(xhr.responseText.toString()));
+        }
+    };
+    xhr.open("POST", "http://localhost:8095/rest/tipojabamatriz/save", true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(tipo_jaba));
+}

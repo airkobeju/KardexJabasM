@@ -81,7 +81,6 @@ Page {
 
             property bool isSelected: false
             property bool isEditing: false
-
             property int cantidad: model.cantidad===undefined?0:model.cantidad
             property real peso: model.peso===undefined?0:model.peso
 

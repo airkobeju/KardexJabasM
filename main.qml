@@ -13,6 +13,7 @@ ApplicationWindow {
         gcProveedores.send();
         getControllerKardex.send();
         getControllerKardexSeries.send();
+        getControllerTipoJaba.send();
     }
 
     visible: true
@@ -23,6 +24,7 @@ ApplicationWindow {
     property ListModel modelKardexSeries: ListModel{}
     property ListModel modelKardexLanding: ListModel{}
     property ListModel modelProveedores: ListModel{}
+    property ListModel modelTipoJaba: ListModel{}
 
     Drawer{
         id: drawer
@@ -68,6 +70,15 @@ ApplicationWindow {
 //                }
 //            }
 
+            ItemDelegate {
+                text: qsTr(frmTipoJaba.title)
+                width: parent.width
+                onClicked: {
+                    swipeView.currentIndex = 1;
+                    drawer.close()
+                }
+            }
+
         }
     }
 
@@ -107,6 +118,12 @@ ApplicationWindow {
         onReplyFinished: Js.replyFinished(strJson, modelKardexSeries);
     }
 
+    GetController {
+        id: getControllerTipoJaba
+        url: "http://localhost:8095/rest/tipojabamatriz/all"
+        onReplyFinished: Js.replyFinished(strJson, frmTipoJaba.modelTipoJaba)
+    }
+
     SwipeView {
         id: swipeView
         anchors.fill: parent
@@ -118,6 +135,11 @@ ApplicationWindow {
             Component.onCompleted: {
                 print("#### KardexLanding");
             }
+
+        }
+
+        FormTipoJaba {
+            id: frmTipoJaba
 
         }
 

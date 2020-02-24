@@ -18,5 +18,6 @@
         <file>ViewKardex.qml</file>
         <file>utils/JDelegateListView.qml</file>
         <file>imgs/save_icon.png</file>
+        <file>FormTipoJaba.qml</file>
     </qresource>
 </RCC>
