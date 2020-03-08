@@ -14,8 +14,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        backend.cpp \
         http/getcontroller.cpp \
+        http/postcontroller.cpp \
         main.cpp \
         proveedorcontroller.cpp \
         proveedormodel.cpp
@@ -34,19 +34,19 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lmongocxx
+#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lmongocxx
 
-INCLUDEPATH += $$PWD/../../../../../usr/local/include/mongocxx/v_noabi
-DEPENDPATH += $$PWD/../../../../../usr/local/include/mongocxx/v_noabi
+#INCLUDEPATH += $$PWD/../../../../../usr/local/include/mongocxx/v_noabi
+#DEPENDPATH += $$PWD/../../../../../usr/local/include/mongocxx/v_noabi
 
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lbsoncxx
+#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lbsoncxx
 
-INCLUDEPATH += $$PWD/../../../../../usr/local/include/bsoncxx/v_noabi
-DEPENDPATH += $$PWD/../../../../../usr/local/include/bsoncxx/v_noabi
+#INCLUDEPATH += $$PWD/../../../../../usr/local/include/bsoncxx/v_noabi
+#DEPENDPATH += $$PWD/../../../../../usr/local/include/bsoncxx/v_noabi
 
 HEADERS += \
-    backend.h \
     http/getcontroller.h \
+    http/postcontroller.h \
     proveedorcontroller.h \
     proveedormodel.h
 

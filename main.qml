@@ -2,6 +2,7 @@ import QtQuick 2.10
 import QtQuick.Controls 1.2
 import QtQuick.Controls 2.3
 import "js/commons.js" as Js
+import "form"
 import com.jmtp.http 1.0
 
 ApplicationWindow {
@@ -35,10 +36,19 @@ ApplicationWindow {
             anchors.fill: parent
 
             ItemDelegate {
-                text: qsTr(kardexLanding.title)
+                text: qsTr(frmCompras.title)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 0;
+                    drawer.close()
+                }
+            }
+
+            ItemDelegate {
+                text: qsTr(kardexLanding.title)
+                width: parent.width
+                onClicked: {
+                    swipeView.currentIndex = 1;
                     drawer.close()
                 }
             }
@@ -74,7 +84,7 @@ ApplicationWindow {
                 text: qsTr(frmTipoJaba.title)
                 width: parent.width
                 onClicked: {
-                    swipeView.currentIndex = 1;
+                    swipeView.currentIndex = 2;
                     drawer.close()
                 }
             }
@@ -121,7 +131,7 @@ ApplicationWindow {
     GetController {
         id: getControllerTipoJaba
         url: "http://localhost:8095/rest/tipojabamatriz/all"
-        onReplyFinished: Js.replyFinished(strJson, frmTipoJaba.modelTipoJaba)
+        onReplyFinished: Js.replyFinished(strJson, modelTipoJaba);
     }
 
     SwipeView {
@@ -129,18 +139,23 @@ ApplicationWindow {
         anchors.fill: parent
         currentIndex: 0
 
+        FormCompra {
+            id: frmCompras
+            series: modelKardexSeries
+            proveedores: modelProveedores
+        }
+
         KardexLanding{
             id: kardexLanding
             //modelEntries: modelKardexLanding
             Component.onCompleted: {
-                print("#### KardexLanding");
+                //print("#### KardexLanding");
             }
 
         }
 
         FormTipoJaba {
             id: frmTipoJaba
-
         }
 
 //        FormKardex {
@@ -173,4 +188,8 @@ ApplicationWindow {
 //        }
 
     }
+    data: [
+        Binding { target: frmCompras; property: "tipoJabaList"; value: modelTipoJaba },
+        Binding { target: frmTipoJaba; property: "modelTipoJaba"; value: modelTipoJaba }
+    ]
 }

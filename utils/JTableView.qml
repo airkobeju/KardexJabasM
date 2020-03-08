@@ -3,20 +3,13 @@ import QtQuick 2.12
 Rectangle {
     id: _jTableView
 
-    property ListModel model: ListModel{
-        onRowsInserted: {
-            print("+dato agregado+");
-        }
-        onCountChanged: {
-            print("Largo nuevo: " + this.count);
-        }
-    }
+    property ListModel model: ListModel{}
     property int headerHeight: 40
     property list<Item> header
     //property Component delegate
     property alias delegate: __list.delegate
 
-    property variant rowFields:[]
+    property variant rowFields:([])
     property int margin: 2
 
     signal clickView(var model)
@@ -26,24 +19,20 @@ Rectangle {
     radius: 2
     border.color: "#2c2a2a"
     clip: true
+    focus: true
 
     Component.onCompleted: {
-        print("File: JTableView->onCompleted | objectName: "+parent.objectName);
-        print("==cargando componente de lista");
+//        print("File: JTableView->onCompleted | objectName: "+parent.objectName);
+//        print("==cargando componente de lista");
 //        __list.model = model;
 //        __list.delegate= delegate;
     }
 
-    Binding{
+    Binding {
         target: __list
         property: "model"
         value: model
     }
-//    Binding{
-//        target: __list
-//        property: "delegate"
-//        value: delegate
-//    }
 
     ListView {
         id: __list
@@ -52,6 +41,7 @@ Rectangle {
         anchors.margins: margin+2
         anchors.topMargin: headerHeight+5
         currentIndex: 0
+        focus: true
 
         highlight: Rectangle {
             color: "lightsteelblue"
@@ -63,17 +53,6 @@ Rectangle {
         highlightFollowsCurrentItem: true
         highlightMoveDuration: 500
         highlightMoveVelocity: 400
-
-        focus: true
-
-        Component.onCompleted: {
-            print("-Lista creada-")
-        }
-
-        onModelChanged: {
-            print("model.length: "+this.model.length);
-            print("el modelo ha cambiado");
-        }
 
         onCurrentIndexChanged: {
         }

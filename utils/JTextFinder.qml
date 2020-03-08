@@ -2,6 +2,7 @@ import QtQuick 2.12
 
 FocusScope {
     id: focusScope
+    focus: true
 
     property var textControl:txtInput
     property ListModel list: ListModel{}
@@ -10,6 +11,7 @@ FocusScope {
     property alias text: txtInput.text
     property string placeholder
     property alias font: txtInput.font
+    property var currentObject
 
     signal itemSelected(var item)
 
@@ -37,6 +39,7 @@ FocusScope {
         TextInput {
             id: txtInput
             z:101
+            focus: true
 
             function search(){
                 var _list = list;
@@ -70,7 +73,8 @@ FocusScope {
                 print("Intro pressed");
                 print("Proveedor: "+"["+list.get(indexSelected).id+"]"+list.get(indexSelected).lastName+", "+list.get(indexSelected).firstName);
                 txtInput.text =  list.get(indexSelected).name;
-                itemSelected(list.get(indexSelected));
+                currentObject = list.get( indexSelected );
+                itemSelected(list.get( indexSelected ));
             }
 
             y: 15

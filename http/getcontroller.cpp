@@ -17,17 +17,6 @@ void GetController::send(QUrl ruta)
     QNetworkReply* currentReply = networkManager->get(request);
 }
 
-//void GetController::send(const QUrl &ruta)
-//{
-//    qDebug("Iniciando función send()");
-//    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
-//    QNetworkRequest request;
-//    request.setUrl(ruta);
-//    //connect(networkManager, &QNetworkAccessManager::finished, this, &GetController::replayFinished);
-//    connect(networkManager,SIGNAL(finished(QNetworkReply *)), this, SLOT(finished(QNetworkReply *)));
-//    QNetworkReply* currentReply = networkManager->get(request);
-//}
-
 void GetController::send()
 {
     //TODO: controlar excepción si url no está seteada.

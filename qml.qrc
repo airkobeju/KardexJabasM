@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>Page1Form.ui.qml</file>
-        <file>Page2Form.ui.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>js/commons.js</file>
         <file>FormProveedor.qml</file>
@@ -19,5 +17,9 @@
         <file>utils/JDelegateListView.qml</file>
         <file>imgs/save_icon.png</file>
         <file>FormTipoJaba.qml</file>
+        <file>utils/JTextfieldLister.qml</file>
+        <file>fonts/Comfortaa-Regular.ttf</file>
+        <file>fonts/Existence-Light.ttf</file>
+        <file>form/FormCompra.qml</file>
     </qresource>
 </RCC>

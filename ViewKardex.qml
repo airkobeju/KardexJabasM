@@ -1,12 +1,13 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
+import com.jmtp.http 1.0
 import "utils" as Ut
 import "js/commons.js" as Js
-
 
 Page {
     id: viewKardex
     title: qsTr("Vista de Boleta")
+    opacity: 1
 
     property bool isEditable: true
     property string serie: "001"
@@ -16,7 +17,13 @@ Page {
     property string jabaEntregada: "0"
     property string jabaRecepcionada: "0"
     property alias modelPesos: jTableView.model
-    opacity: 1
+
+    resources: [
+        PostController {
+            id: post_tipojaba
+            url: "http://localhost:8095/rest/itemkardexdetail/add_tipojaba"
+        }
+    ]
 
     Label {
         id: lblSerie
@@ -51,10 +58,11 @@ Page {
     Label {
         id: lblProveedor
         text: qsTr(proveedorName)
-        font.pointSize: 14
-        font.family: "Tahoma"
         anchors.left: parent.left
         anchors.leftMargin: 15
+        verticalAlignment: Text.AlignVCenter
+        font.pointSize: 14
+        font.family: "Tahoma"
         anchors.top: lblFecha.bottom
         anchors.topMargin: 10
     }
@@ -71,7 +79,7 @@ Page {
         anchors.topMargin: 10
         header: [
             Ut.JTableColum {text: "Cantidad"; width: 90},
-            Ut.JTableColum {text: "Peso"; width: 180 },
+            Ut.JTableColum {text: "Peso"; opacity: 1; width: 180 },
             Ut.JTableColum {text: "Tipos de Jabas"; width: 200 }
         ]
         delegate: Item {
@@ -81,13 +89,13 @@ Page {
 
             property bool isSelected: false
             property bool isEditing: false
+            property string _id: model.id
             property int cantidad: model.cantidad===undefined?0:model.cantidad
             property real peso: model.peso===undefined?0:model.peso
+            property variant tipoJaba: if(model.tipoJaba !== undefined) model.tipoJaba
 
             onActiveFocusChanged: {
-                print("Item activeFocus");
                 if( !activeFocus ){
-                    console.info("Item pierde foco");
                     setCurrentData();
                     isSelected = false;
                 }
@@ -100,29 +108,31 @@ Page {
             function setCurrentData(){
                 txt_vk_peso_cantidad.text = cantidad;
                 txt_vk_peso.text = peso;
+                jtfl_vk_tipojaba.clear();
             }
 
             Row {
                 id: rw_vk_data
                 z:10
                 anchors.fill : parent
-                Text { leftPadding: 10; width: 180; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  txt_vk_peso_cantidad.text }
-                Text { leftPadding: 10; width: 380; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  txt_vk_peso.text}
+                Text { leftPadding: 10; width: 90; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  txt_vk_peso_cantidad.text }
+                Text { leftPadding: 10; width: 180; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  txt_vk_peso.text}
+                Text { leftPadding: 10; width: 200; height: parent.height; verticalAlignment: Text.AlignVCenter ; text:  jtfl_vk_tipojaba.text}
             }
+
             MouseArea {
                 id: ma_item
                 z:11
                 anchors.fill : parent
                 onClicked: {
-                    //click(index);
                     parent.forceActiveFocus();
                     parent.parent.parent.currentIndex = index;
                 }
             }
+
             RoundButton {
                 id: rbtnActionItem
                 z:12
-                //focus: false
                 focusPolicy: Qt.NoFocus
                 x: parent.width+(this.width+10)
                 y: (parent.height-this.height)/2
@@ -131,10 +141,8 @@ Page {
 
                 onClicked: {
                     parent.parent.parent.parent.clickView(model);
-                    //print("estate: "+parent.objectName);
                     parent.state = "editing";
                     txt_vk_peso_cantidad.focus = true;
-                    //print("Editar peso");
                 }
             }
 
@@ -143,21 +151,27 @@ Page {
                 visible: false
                 z:13
                 anchors.right: parent.left
-                TextInput { id:txt_vk_peso_cantidad; color: "red"; leftPadding: 10; width: 180; height: parent.height; verticalAlignment: Text.AlignVCenter
-                    onActiveFocusChanged: {
-                        if( !txt_vk_peso_cantidad.activeFocus ){
-                            parent.parent.setCurrentData();
-                        }
-                    }
+
+                TextField { id:txt_vk_peso_cantidad; color: "red"; leftPadding: 10
+                    width: 90; height: parent.height; verticalAlignment: Text.AlignVCenter
                 }
-                TextInput { id:txt_vk_peso; color: "red"; leftPadding: 10; width: 380; height: parent.height; verticalAlignment: Text.AlignVCenter
-                    onActiveFocusChanged: {
-                        if( !txt_vk_peso.activeFocus ){
-                            parent.parent.setCurrentData();
-                        }
+                TextField { id:txt_vk_peso; color: "red"; leftPadding: 10; width: 180
+                    height: parent.height; verticalAlignment: Text.AlignVCenter
+                }
+                Ut.JTextfieldLister{
+                    id: jtfl_vk_tipojaba
+                    width: 200; height: parent.height; anchors.verticalCenter: parent.verticalCenter; color: "red"
+                    modelLister: parent.parent.tipoJaba; maxCantidad: parent.parent.cantidad
+                    onAppend: {
+                        //Agregaar tipoJaba al ItemKardexDetail
+                        print("Agregando tipojaba al item de kardex");
+                        print( tj_Obj );
+                        post_tipojaba.jsonString = JSON.stringify( tj_Obj  );
                     }
+
                 }
             }
+
             RoundButton {
                 id: rbtnActionItemEdit
                 z:14
@@ -226,14 +240,11 @@ Page {
                         anchors.leftMargin: ma_item.parent.width
                         anchors.rightMargin: ma_item.parent.width*-1
                     }
-                    when: isEditing || txt_vk_peso.focus || txt_vk_peso_cantidad.focus || rbtnActionItemEdit.focus
+                    when: isEditing || txt_vk_peso.focus || txt_vk_peso_cantidad.focus || jtfl_vk_tipojaba.focus ||rbtnActionItemEdit.focus
                 }
             ]
         }//delegateViewKardex
         model: modelPesos
-        onClickView: {
-            print("ID: "+model.id);
-        }
     }
 
     Label {
@@ -287,8 +298,6 @@ Page {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}D{i:1;anchors_y:32}D{i:2;anchors_y:32}D{i:3;anchors_y:32}
-D{i:4;anchors_x:6;anchors_y:100}D{i:6;anchors_x:6}D{i:7;anchors_x:109}D{i:8;anchors_x:235}
-D{i:5;anchors_height:203;anchors_width:628;anchors_x:6;anchors_y:123}
+    D{i:0;autoSize:true;height:480;width:640}
 }
 ##^##*/

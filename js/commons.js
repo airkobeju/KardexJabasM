@@ -90,12 +90,12 @@ function updatePeso(objPeso, fnt){
 }
 
 function replyFinished(strjson, model) {
+    if(strjson ==="" || strjson===undefined)
+        return;
     var json = JSON.parse(strjson);
-    print("json.length"+ json.length);
     json.forEach(function(item,index){
         model.append(item);
     });
-    print("modelo cargado");
     if(arguments.length === 3)
         arguments[2](json);
 }
@@ -112,4 +112,8 @@ function saveTipoJaba(tipo_jaba, fnt){
     xhr.open("POST", "http://localhost:8095/rest/tipojabamatriz/save", true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(tipo_jaba));
+}
+
+function saveTipoJabaEntry(item, fnt){
+
 }
