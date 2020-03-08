@@ -1,7 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQml 2.12
-import "../imgs"
 
 //Item {
 //    id: __jitemListView
@@ -102,7 +101,7 @@ Item {
         x: parent.width+(this.width+10)
         y: (parent.height-this.height)/2
         display: AbstractButton.IconOnly
-        icon.source: "imgs/edit_icon.png"
+        icon.source: "../../imgs/edit_icon.png"
 
         onClicked: {
             parent.parent.parent.parent.clickView(model);
@@ -128,7 +127,7 @@ Item {
         x: parent.width-(this.width+10)
         y: (parent.height-this.height)/2
         display: AbstractButton.IconOnly
-        icon.source: "imgs/save_icon.png"
+        icon.source: "../../imgs/save_icon.png"
 
         onClicked: {
             print("Guardar cambios en pesos");

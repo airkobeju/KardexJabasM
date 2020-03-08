@@ -161,6 +161,12 @@ Page {
                 state = "editing";
             }
 
+            onFocusChanged: {
+                if( focus === true ){
+                    jtvCompraItems.currentIndex = index;
+                }
+            }
+
             function setCurrentData() {
                 txt_vk_peso_cantidad.text = cantidad;
                 txt_vk_peso.text = peso;
@@ -207,7 +213,7 @@ Page {
                 x: parent.width+(this.width+10)
                 y: (parent.height-this.height)/2
                 display: AbstractButton.IconOnly
-                icon.source: "../imgs/edit_icon.png"
+                icon.source: "../../imgs/edit_icon.png"
 
                 onClicked: {
                     parent.parent.parent.parent.clickView(model);
@@ -315,7 +321,7 @@ Page {
                         target: rbtnActionItem
                         x: parent.width-(this.width+10)
                     }
-                    when: focus || rbtnActionItem.focus
+                    //when: focus || rbtnActionItem.focus
                 },
                 State {
                     name: "editing"

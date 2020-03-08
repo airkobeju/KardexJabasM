@@ -2,7 +2,6 @@ import QtQuick 2.12
 import QtQuick.Controls 2.5
 import "utils" as Jc
 import "js/commons.js" as Js
-import "imgs"
 
 Page {
     id:__kardexLanding
@@ -66,7 +65,7 @@ Page {
                 x: parent.width+(this.width+10)
                 y: (parent.height-this.height)/2
                 display: AbstractButton.IconOnly
-                icon.source: "imgs/view_icon.png"
+                icon.source: "../imgs/view_icon.png"
 
                 onClicked: {
                     parent.parent.parent.parent.clickView(model);

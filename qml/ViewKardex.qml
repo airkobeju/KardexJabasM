@@ -137,7 +137,7 @@ Page {
                 x: parent.width+(this.width+10)
                 y: (parent.height-this.height)/2
                 display: AbstractButton.IconOnly
-                icon.source: "imgs/edit_icon.png"
+                icon.source: "../imgs/edit_icon.png"
 
                 onClicked: {
                     parent.parent.parent.parent.clickView(model);
@@ -181,7 +181,7 @@ Page {
                 x: parent.width-(this.width+10)
                 y: (parent.height-this.height)/2
                 display: AbstractButton.IconOnly
-                icon.source: "imgs/save_icon.png"
+                icon.source: "../imgs/save_icon.png"
 
                 onClicked: {
                     Js.updatePeso(

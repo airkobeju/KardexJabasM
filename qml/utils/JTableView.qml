@@ -8,6 +8,7 @@ Rectangle {
     property list<Item> header
     //property Component delegate
     property alias delegate: __list.delegate
+    property alias currentIndex: __list.currentIndex
 
     property variant rowFields:([])
     property int margin: 2

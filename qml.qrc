@@ -1,25 +1,25 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
+        <file>qml/main.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>js/commons.js</file>
-        <file>FormProveedor.qml</file>
-        <file>FormKardex.qml</file>
-        <file>utils/JTextFinder.qml</file>
-        <file>KardexLanding.qml</file>
-        <file>FormSerie.qml</file>
-        <file>utils/JTableView.qml</file>
-        <file>utils/JItemListView.qml</file>
+        <file>qml/js/commons.js</file>
+        <file>qml/FormProveedor.qml</file>
+        <file>qml/FormKardex.qml</file>
+        <file>qml/utils/JTextFinder.qml</file>
+        <file>qml/KardexLanding.qml</file>
+        <file>qml/FormSerie.qml</file>
+        <file>qml/utils/JTableView.qml</file>
+        <file>qml/utils/JItemListView.qml</file>
         <file>imgs/view_icon.png</file>
-        <file>utils/JTableColum.qml</file>
+        <file>qml/utils/JTableColum.qml</file>
         <file>imgs/edit_icon.png</file>
-        <file>ViewKardex.qml</file>
-        <file>utils/JDelegateListView.qml</file>
+        <file>qml/ViewKardex.qml</file>
+        <file>qml/utils/JDelegateListView.qml</file>
         <file>imgs/save_icon.png</file>
-        <file>FormTipoJaba.qml</file>
-        <file>utils/JTextfieldLister.qml</file>
+        <file>qml/FormTipoJaba.qml</file>
+        <file>qml/utils/JTextfieldLister.qml</file>
         <file>fonts/Comfortaa-Regular.ttf</file>
         <file>fonts/Existence-Light.ttf</file>
-        <file>form/FormCompra.qml</file>
+        <file>qml/form/FormCompra.qml</file>
     </qresource>
 </RCC>
