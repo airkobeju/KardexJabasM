@@ -5,7 +5,7 @@ Rectangle {
 
     property ListModel model: ListModel{}
     property int headerHeight: 40
-    property list<Item> header
+    property alias header: __list.header
     //property Component delegate
     property alias delegate: __list.delegate
     property alias currentIndex: __list.currentIndex
@@ -29,20 +29,24 @@ Rectangle {
 //        __list.delegate= delegate;
     }
 
-    Binding {
-        target: __list
-        property: "model"
-        value: model
-    }
+    data: [
+        Binding {
+            target: __list
+            property: "model"
+            value: model
+        }
+    ]
+
 
     ListView {
         id: __list
         objectName: "@listView"
         anchors.fill: parent
-        anchors.margins: margin+2
-        anchors.topMargin: headerHeight+5
+        anchors.margins: margin
         currentIndex: 0
         focus: true
+        headerPositioning: ListView.OverlayHeader
+        clip: true
 
         highlight: Rectangle {
             color: "lightsteelblue"
@@ -58,35 +62,6 @@ Rectangle {
         onCurrentIndexChanged: {
         }
     }
-
-    Rectangle {
-        objectName: "Rectangle Container Header"
-        color: "#7e7676"
-        height: headerHeight
-        radius: 5
-        anchors.right: parent.right
-        anchors.rightMargin: margin
-        anchors.left: parent.left
-        anchors.leftMargin: margin
-        anchors.top: parent.top
-        anchors.topMargin: margin
-        clip: true
-        z:6
-
-        Row {
-            id:__jtable_header
-            objectName: "headerContainer"
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: headerHeight
-            clip: true
-            children: header
-        }
-        Component.onCompleted: print("-Rectangulo de la cabecera-")
-    }
-
-
 
 }
 

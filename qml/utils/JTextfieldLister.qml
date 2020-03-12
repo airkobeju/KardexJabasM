@@ -6,10 +6,6 @@ import "../js/commons.js" as Js
 FocusScope {
     id: __element
 
-    implicitHeight: 40
-    implicitWidth: 400
-    focus: true
-
     property int digitLengthCantidad: 2
     property int digitLengthAbreviacion: 3
     property int maxCantidad: 10
@@ -19,9 +15,10 @@ FocusScope {
     property color color: "red"
     property ListModel matrixTipoJaba: ListModel{}
     property var  lstTipoJaba: []
+    property alias placeholderText: txt_jtfl_text.placeholderText
 
-    //FIXME: Agregar laseñar en el evento
     signal append(var tj_obj)
+    signal remove(var itm_index)
 
     Component.onCompleted: {
         getCntTipoJaba.send();
@@ -43,6 +40,7 @@ FocusScope {
                 if( matrixTipoJaba.get(i)['abreviacion'] === abv )
                     return matrixTipoJaba.get(i);
             }
+            throw "No se encontró el tipo de jaba";
         }
 
     }
@@ -85,17 +83,24 @@ FocusScope {
             if( isNaN( parseInt( str.charAt(i) )) ){
                 v_cnt = parseInt(str.substr(0,i));
                 v_abv = str.slice(i);
-                obj_tipojaba = js_scripts.findTipoJabaByAbreviacion(v_abv);
+                try{
+                    obj_tipojaba = js_scripts.findTipoJabaByAbreviacion(v_abv);
+                }catch(err){
+                    throw err;
+                }
                 break;
             }
         }
         return {
-            "id": null,
+            "id": "",
             "cantidad": v_cnt,
             "tipoJaba":obj_tipojaba
         };
     }
 
+    implicitHeight: 40
+    implicitWidth: 400
+    focus: true
     data: [
         TextMetrics {
             id: tm_jtfl_metrics
@@ -111,9 +116,9 @@ FocusScope {
 
     ListView {
         id: _jtfl_listview
+
         orientation: ListView.Horizontal
         flickableDirection: Flickable.HorizontalFlick
-
         anchors.left: parent.left
         anchors.leftMargin: 2
         anchors.top: parent.top
@@ -122,12 +127,10 @@ FocusScope {
         anchors.bottomMargin: 2
         anchors.right: txt_jtfl_text.left
         anchors.rightMargin: 2
-
         activeFocusOnTab: true
-
-        model: modelLister
+        model:  modelLister
         delegate: MouseArea {
-            property string _id: model.id===undefined?null:model.id
+            property string _id: model.id===undefined||model.id===null?null:model.id
             property int  cantidad: model.cantidad
             property string abreviacion: model.tipoJaba.abreviacion
 
@@ -148,7 +151,7 @@ FocusScope {
                 rightPadding: 5
             }//Text
             onClicked: {
-                parent.parent.focus = true;
+                parent.parent.forceActiveFocus();
                 parent.parent.currentIndex = index;
             }
         }
@@ -156,6 +159,7 @@ FocusScope {
         highlight: Rectangle { color: "transparent" ; radius: 3; border.color:"gray"; border.width: 1  }
 
         Keys.onDeletePressed: {
+            __element.remove(_jtfl_listview.currentIndex);
             parent.modelLister.remove( _jtfl_listview.currentIndex );
             lstTipoJaba.splice(_jtfl_listview.currentIndex,1);
         }
@@ -177,20 +181,39 @@ FocusScope {
         verticalAlignment: Text.AlignVCenter
 
         onAccepted: {
-            if( txt_jtfl_text.text.length < 2 )
+            if(txt_jtfl_text.text.length < 2)
                 return;
             //contiene [cantidad, tipoJaba]
-            var _obj = validateTipoJaba( parent.digitLengthCantidad , parent.digitLengthAbreviacion, txt_jtfl_text.text);
+            var _obj = {};
+            try{
+                 _obj = validateTipoJaba( parent.digitLengthCantidad , parent.digitLengthAbreviacion, txt_jtfl_text.text);
+            }catch(err){
+                console.error("ERROR: "+err);
+                return;
+            }
+
             if( currentCantidad+_obj["cantidad"] > maxCantidad )
                 return;
+            print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
+            lstTipoJaba.push(_obj);
+            print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
+            if(_obj['id']===""){
+                modelLister.append({
+                                       "id": "",
+                                       "cantidad":_obj["cantidad"],
+                                       "tipoJaba":_obj["tipoJaba"]
+                                   });
+            }else{
+                modelLister.append(_obj);
+            }
+            print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
+
             append(_obj); //signal
 
-            modelLister.append(_obj);
-            lstTipoJaba.push(_obj);
             _jtfl_listview.currentIndex = parent.modelLister.count-1;
             txt_jtfl_text.text="";
         }
-    }
+    } //txt_jtfl_text
 }
 
 /*##^##

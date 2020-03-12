@@ -19,6 +19,8 @@
 #include <QFont>
 #include <QFontDatabase>
 
+#include "entradasmodel.h"
+
 int main(int argc, char *argv[])
 {
     /**
@@ -41,6 +43,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+
+    //qmlRegisterType<EntradasModel>("com.jmtp.model", 1, 0, "EntradasModel");
 
     QFontDatabase::addApplicationFont("qrc:/fonts/Comfortaa-Regular.ttf");
     QFontDatabase::addApplicationFont("qrc:/fonts/Existence-Light.ttf");

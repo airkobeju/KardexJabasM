@@ -43,7 +43,7 @@ ApplicationWindow {
                     drawer.close()
                 }
             }
-
+            /*
             ItemDelegate {
                 text: qsTr(kardexLanding.title)
                 width: parent.width
@@ -51,7 +51,7 @@ ApplicationWindow {
                     swipeView.currentIndex = 1;
                     drawer.close()
                 }
-            }
+            }*/
 
 //            ItemDelegate {
 //                text: qsTr(frmKardex.title)
@@ -79,7 +79,7 @@ ApplicationWindow {
 //                    drawer.close()
 //                }
 //            }
-
+            /**
             ItemDelegate {
                 text: qsTr(frmTipoJaba.title)
                 width: parent.width
@@ -87,7 +87,7 @@ ApplicationWindow {
                     swipeView.currentIndex = 2;
                     drawer.close()
                 }
-            }
+            }**/
 
         }
     }
@@ -145,18 +145,18 @@ ApplicationWindow {
             proveedores: modelProveedores
         }
 
-        KardexLanding{
-            id: kardexLanding
-            //modelEntries: modelKardexLanding
-            Component.onCompleted: {
-                //print("#### KardexLanding");
-            }
+//        KardexLanding{
+//            id: kardexLanding
+//            //modelEntries: modelKardexLanding
+//            Component.onCompleted: {
+//                //print("#### KardexLanding");
+//            }
 
-        }
+//        }
 
-        FormTipoJaba {
-            id: frmTipoJaba
-        }
+//        FormTipoJaba {
+//            id: frmTipoJaba
+//        }
 
 //        FormKardex {
 //            id: frmKardex

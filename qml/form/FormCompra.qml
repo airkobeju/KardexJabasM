@@ -10,18 +10,29 @@ Page {
     property alias series: cmbCompraSerie.model
     property alias proveedores: jtxtCompraProveedor.list
     property ListModel tipoJabaList: ListModel{}
+    property int cantidadEntrada:0
+    property int cantidadSalida:0
     property variant boleta: {
-        "id": null,
+        "id": "",
         "serie":cmbCompraSerie.model.get( cmbCompraSerie.currentIndex ),
         "numeracion": parseInt( txtCompraNumeracion.text ),
         "fecha":txtCompraFecha.text,
         "proveedor": jtxtCompraProveedor.currentObject,
         "nota":null,
         "itemsEntrada": [],
-        "itemsSalida": [],
+        "itemsSalida": [
+                    {
+                        "id": "",
+                        "cantidad": jtfCompraDevolucionJabas.currentCantidad,
+                        "peso": 0,
+                        "nota": "",
+                        "tipoJaba": jtfCompraDevolucionJabas.lstTipoJaba
+                    }
+                ],
         "venta": false,
         "close": false
     }
+    property var lst_tj_salida: ([])
 
     Component.onCompleted: {
         var today = new Date();
@@ -54,14 +65,15 @@ Page {
         onClicked: {
             var pssBoleta = JSON.stringify( boleta );
             print( pssBoleta );
-
         }
     }
 
     ComboBox {
         id: cmbCompraSerie
+
         height: controlsHeight
         textRole: "value"
+        currentIndex: 0
 
         anchors.right: txtCompraNumeracion.left
         anchors.rightMargin: 10
@@ -76,6 +88,7 @@ Page {
         id: txtCompraNumeracion
         height: controlsHeight
         placeholderText: qsTr("Numeración")
+        horizontalAlignment: Text.AlignHCenter
 
         anchors.right: txtCompraFecha.left
         anchors.rightMargin: 10
@@ -88,6 +101,7 @@ Page {
     TextField {
         id: txtCompraFecha
         height: controlsHeight
+        horizontalAlignment: Text.AlignHCenter
         placeholderText: "Fecha [yyyy-MM-dd]"
 
         anchors.top: btnCompraSave.bottom
@@ -102,6 +116,7 @@ Page {
         id: jtxtCompraProveedor
         height: controlsHeight
         placeholder: qsTr("Proveedor")
+        radius: 2
 
         anchors.left: parent.left
         anchors.leftMargin: 2
@@ -115,7 +130,7 @@ Page {
 
     Label {
         id: lblCompraRecepcionJabas
-        text: qsTr("Jabas Recepcionadas: ")
+        text: qsTr("Jabas Recepcionadas: "+ cantidadEntrada)
         font.pointSize: 12
         verticalAlignment: Text.AlignVCenter
         height: controlsHeight
@@ -140,14 +155,23 @@ Page {
         anchors.top: lblCompraRecepcionJabas.bottom
         anchors.topMargin: 10
 
-        header: [
-            Ut.JTableColum {text: "Cantidad"; width: 90},
-            Ut.JTableColum {text: "Peso"; opacity: 1; width: 180 },
-            Ut.JTableColum {text: "Tipos de Jabas"; width: 200 }
-        ]
+        header: Rectangle{
+            z:3
+            anchors{
+                left: parent.left
+                right: parent.right
+            }
+            height: 40
 
+            color: "#3d3939"
+            Row {
+                anchors.fill: parent
+                Ut.JTableColum {text: "Cantidad"; width: 90}
+                Ut.JTableColum {text: "Peso"; opacity: 1; width: 180 }
+                Ut.JTableColum {text: "Tipos de Jabas"; width: 200 }
+            }
+        }
         delegate: FocusScope {
-
             property bool isNew: true
             property bool isSelected: true
             property bool isEditing: true
@@ -155,6 +179,7 @@ Page {
             property int cantidad: model.cantidad===undefined?0:model.cantidad
             property real peso: model.peso===undefined?0:model.peso
             property variant tipoJaba: ({})
+            property var lst_tj_entrada: ([])
 
             Component.onCompleted: {
                 setCurrentData();
@@ -189,9 +214,7 @@ Page {
                 z:10
                 anchors.fill : parent
                 Text { leftPadding: 10; width: 90; height: parent.height; verticalAlignment: Text.AlignVCenter}
-                    //text:  boleta['itemsEntrada'].lenght>0? boleta['itemsEntrada'][index]['cantidad']:null} //jtvCompraItems.model.get(index)['cantidad']}
-                Text { leftPadding: 10; width: 180; height: parent.height; verticalAlignment: Text.AlignVCenter
-                    text: boleta['itemsEntrada'].lenght>0? boleta['itemsEntrada'][index]['peso']:null}//jtvCompraItems.model.get(index)['peso']}
+                Text { leftPadding: 10; width: 180; height: parent.height; verticalAlignment: Text.AlignVCenter}
                 Text { leftPadding: 10; width: 200; height: parent.height; verticalAlignment: Text.AlignVCenter
                     text:  jtfl_vk_tipojaba.getText()}
             }
@@ -245,7 +268,7 @@ Page {
                 Ut.JTextfieldLister {
                     id: jtfl_vk_tipojaba
                     width: 200; height: parent.height; anchors.verticalCenter: parent.verticalCenter
-                    color: "red"; maxCantidad: parseInt(txt_vk_peso_cantidad.text)
+                    color: "red"; maxCantidad: parseInt(txt_vk_peso_cantidad.text); lstTipoJaba: lst_tj_entrada
                     //matrixTipoJaba: parent.parent.parent.parent.tipoJabaList
                     onAppend: {
                         //jtvCompraItems.model.get(index)['tipoJaba'] = [];
@@ -285,21 +308,19 @@ Page {
 //                    });
 
                     if( parent.isNew ){
-                        print("#=#=#=#=#=#=#=#=#=#=#=#");
-                        print(JSON.stringify(jtfl_vk_tipojaba.lstTipoJaba));
                         var item_entrada = {
-                            "id": null,
+                            "id": "",
                             "cantidad": parseInt( txt_vk_peso_cantidad.text ),
                             "peso": parseFloat(txt_vk_peso.text),
                             "nota": "",
-                            "tipoJaba": jtfl_vk_tipojaba.lstTipoJaba
+                            "tipoJaba": parent.lst_tj_entrada  //jtfl_vk_tipojaba.lstTipoJaba
                         };
                         boleta.itemsEntrada.push(item_entrada);
                         parent.state = "selected";
 
                         //Agregando el registro en blanco
                         jtvCompraItems.model.append({
-                                                        "id": null,
+                                                        "id": "",
                                                         "cantidad":0,
                                                         "peso":0,
                                                         "nota": "",
@@ -310,7 +331,13 @@ Page {
                         parent.state = "selected";
 
                     }
+                    //coloca los valores en las etiquetas del Row de datos no editables
                     parent.setEntryData();
+
+                    cantidadEntrada=0;
+                    boleta['itemsEntrada'].forEach(function(item, index){
+                        cantidadEntrada += item['cantidad'];
+                    });
                 }
             }
 
@@ -360,7 +387,7 @@ Page {
 
     Label {
         id: lblCompraDevolucionJabas
-        text: qsTr("Devolución de Jabas: ")
+        text: qsTr("Devolución de Jabas: " + jtfCompraDevolucionJabas.currentCantidad)
         font.pointSize: 12
         verticalAlignment: Text.AlignVCenter
         height: controlsHeight
@@ -376,13 +403,35 @@ Page {
     Ut.JTextfieldLister {
         id: jtfCompraDevolucionJabas
         height: controlsHeight
-
+        placeholderText: qsTr("Tipo de Jaba [Cantidad|Abreviatura] Ejm. 5c, 3b")
+        color: "black"
+        maxCantidad: cantidadEntrada
+        lstTipoJaba: lst_tj_salida
         anchors.left: parent.left
         anchors.leftMargin: 2
         anchors.right: parent.right
         anchors.rightMargin: 2
         anchors.top: lblCompraDevolucionJabas.bottom
         anchors.topMargin: 10
+
+        onAppend: {
+//            cantidadSalida = 0;
+//            jtfCompraDevolucionJabas.lstTipoJaba.forEach(function(item, index){
+//                cantidadSalida += item['cantidad'];
+//            });
+//            var item_salida = {
+//                "id": null,
+//                "cantidad": cantidadSalida,
+//                "peso": 0,
+//                "nota": "",
+//                "tipoJaba": jtfCompraDevolucionJabas.lstTipoJaba
+//            };
+//            boleta['itemsSalida'][0]['tipoJaba']=[];
+//            boleta['itemsSalida'].push(item_salida);
+        }
+        onRemove: {
+
+        }
     }
 
 }
