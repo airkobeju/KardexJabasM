@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import "../utils" as Ut
+import com.jmtp.model 1.0 as JM
 
 Page {
     id: frmCompra
@@ -51,6 +52,20 @@ Page {
                                         "tipoJaba": null
                                     } );
     }
+
+    data: [
+        JM.ItemsEntrada{
+            id: itm_entradas
+            _id: "qwer4321"
+            cantidad: 10
+            peso: 173.5
+            tipoJabas: [
+                JM.TipoJaba{ _id:"8675yhfr"; cantidad: 8; tipoJaba: JM.TipoJabaMatriz{_id:"9586j77d7e4";name: "Color"; abreviacion: "c"} },
+                JM.TipoJaba{ _id:"8675yhfa"; cantidad: 3; tipoJaba: JM.TipoJabaMatriz{_id:"9586j77d7e5";name: "Danper"; abreviacion: "d"} }
+            ]
+        }
+
+    ]
 
     Button {
         id: btnCompraSave

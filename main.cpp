@@ -19,7 +19,9 @@
 #include <QFont>
 #include <QFontDatabase>
 
-#include "entradasmodel.h"
+#include "model/tipojabamatriz.h"
+#include "model/tipojaba.h"
+#include "model/itemsentrada.h"
 
 int main(int argc, char *argv[])
 {
@@ -54,6 +56,10 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<GetController>("com.jmtp.http", 1, 0, "GetController");
     qmlRegisterType<PostController>("com.jmtp.http", 1, 0, "PostController");
+    //Model types
+    qmlRegisterType<TipoJabaMatriz>("com.jmtp.model", 1, 0, "TipoJabaMatriz");
+    qmlRegisterType<TipoJaba>("com.jmtp.model", 1, 0, "TipoJaba");
+    qmlRegisterType<ItemsEntrada>("com.jmtp.model", 1, 0, "ItemsEntrada");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));

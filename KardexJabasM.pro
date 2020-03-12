@@ -17,6 +17,9 @@ SOURCES += \
         http/getcontroller.cpp \
         http/postcontroller.cpp \
         main.cpp \
+        model/itemsentrada.cpp \
+        model/tipojaba.cpp \
+        model/tipojabamatriz.cpp \
         proveedorcontroller.cpp \
         proveedormodel.cpp
 
@@ -47,6 +50,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     http/getcontroller.h \
     http/postcontroller.h \
+    model/itemsentrada.h \
+    model/tipojaba.h \
+    model/tipojabamatriz.h \
     proveedorcontroller.h \
     proveedormodel.h
 
