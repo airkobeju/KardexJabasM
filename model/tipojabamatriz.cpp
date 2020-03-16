@@ -1,4 +1,5 @@
 #include "tipojabamatriz.h"
+#include <QDebug>
 
 TipoJabaMatriz::TipoJabaMatriz(QObject *parent) : QObject(parent)
 {
@@ -19,7 +20,10 @@ QString TipoJabaMatriz::_id() const
 
 void TipoJabaMatriz::set_id(const QString &_id)
 {
+    if(_id == m__id)
+        return;
     m__id = _id;
+    emit _idChanged();
 }
 
 QString TipoJabaMatriz::name() const
@@ -29,7 +33,10 @@ QString TipoJabaMatriz::name() const
 
 void TipoJabaMatriz::setName(const QString &name)
 {
+    if(name == m_name)
+        return;
     m_name = name;
+    emit nameChanged();
 }
 
 QString TipoJabaMatriz::abreviacion() const
@@ -39,7 +46,10 @@ QString TipoJabaMatriz::abreviacion() const
 
 void TipoJabaMatriz::setAbreviacion(const QString &abreviacion)
 {
+    if(abreviacion == m_abreviacion)
+        return;
     m_abreviacion = abreviacion;
+    emit abreviacionChanged();
 }
 
 TipoJabaMatriz &TipoJabaMatriz::operator=(const TipoJabaMatriz &tjm)
@@ -48,4 +58,14 @@ TipoJabaMatriz &TipoJabaMatriz::operator=(const TipoJabaMatriz &tjm)
     m_name = tjm.m_name;
     m_abreviacion = tjm.m_abreviacion;
     return *this;
+}
+
+bool TipoJabaMatriz::operator==(const TipoJabaMatriz &tjm)
+{
+    return (tjm._id() == m__id && tjm.name() == m_name && tjm.abreviacion() == m_abreviacion);
+}
+
+void TipoJabaMatriz::printerJSObj(QVariantMap obj)
+{
+    qDebug()<< obj;
 }

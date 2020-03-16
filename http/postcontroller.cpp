@@ -1,6 +1,6 @@
 #include "postcontroller.h"
 
-PostController::PostController(QObject *parent)
+PostController::PostController(QObject *parent): QObject(parent)
 {
     networkManager = new QNetworkAccessManager(this);
 }

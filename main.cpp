@@ -18,10 +18,13 @@
 
 #include <QFont>
 #include <QFontDatabase>
+#include <QVariant>
 
 #include "model/tipojabamatriz.h"
 #include "model/tipojaba.h"
 #include "model/itemsentrada.h"
+#include "itemsentradamodel.h"
+#include "tipojabamodel.h"
 
 int main(int argc, char *argv[])
 {
@@ -45,8 +48,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+    app.setOrganizationName("JMTP");
+    app.setOrganizationDomain("jmtp.com");
+    app.setApplicationName("Jabas Kardex");
 
-    //qmlRegisterType<EntradasModel>("com.jmtp.model", 1, 0, "EntradasModel");
 
     QFontDatabase::addApplicationFont("qrc:/fonts/Comfortaa-Regular.ttf");
     QFontDatabase::addApplicationFont("qrc:/fonts/Existence-Light.ttf");
@@ -60,6 +65,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<TipoJabaMatriz>("com.jmtp.model", 1, 0, "TipoJabaMatriz");
     qmlRegisterType<TipoJaba>("com.jmtp.model", 1, 0, "TipoJaba");
     qmlRegisterType<ItemsEntrada>("com.jmtp.model", 1, 0, "ItemsEntrada");
+    qmlRegisterType<ItemsEntradaModel>("com.jmtp.model", 1, 0, "ItemsEntradaModel");
+    qmlRegisterType<TipoJabaModel>("com.jmtp.model", 1, 0, "TipoJabaModel");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));

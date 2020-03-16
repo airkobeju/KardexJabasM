@@ -12,7 +12,7 @@ ItemsEntrada::ItemsEntrada(const QString &_id, unsigned int cantidad, float peso
     m_peso = peso;
 }
 
-ItemsEntrada::ItemsEntrada(const QString &_id, unsigned int cantidad, float peso, const QVector<TipoJaba *> &tipoJaba)
+ItemsEntrada::ItemsEntrada(const QString &_id, unsigned int cantidad, float peso, const QList<TipoJaba *> &tipoJaba)
 {
     m__id = _id;
     m_cantidad = cantidad;
@@ -27,7 +27,10 @@ QString ItemsEntrada::_id() const
 
 void ItemsEntrada::set_id(const QString &_id)
 {
+    if(_id == m__id)
+        return;
     m__id = _id;
+    emit _idChanged();
 }
 
 unsigned int ItemsEntrada::cantidad() const
@@ -37,7 +40,10 @@ unsigned int ItemsEntrada::cantidad() const
 
 void ItemsEntrada::setCantidad(unsigned int cantidad)
 {
+    if(cantidad == m_cantidad)
+        return;
     m_cantidad = cantidad;
+    emit cantidadChanged();
 }
 
 float ItemsEntrada::peso() const
@@ -47,7 +53,10 @@ float ItemsEntrada::peso() const
 
 void ItemsEntrada::setPeso(float peso)
 {
+    if(peso == m_peso)
+        return;
     m_peso = peso;
+    emit pesoChanged();
 }
 
 QQmlListProperty<TipoJaba> ItemsEntrada::tipoJabas()
@@ -61,6 +70,13 @@ QQmlListProperty<TipoJaba> ItemsEntrada::tipoJabas()
 
 void ItemsEntrada::appendTipoJaba(TipoJaba * const &tj)
 {
+    //FIXME: atrapar error de numero desigual de jabas en los tipos
+//    unsigned int c_cantidad = tj->cantidad();
+//    foreach (const TipoJaba *tj, m_tipoJabas) {
+//        c_cantidad += tj->cantidad();
+//    }
+//    if(c_cantidad != m_cantidad)
+//        throw QString(msg_error_1);
     m_tipoJabas.append(tj);
 }
 
@@ -77,6 +93,11 @@ TipoJaba *ItemsEntrada::tipoJabaAt(int index) const
 void ItemsEntrada::clearTipoJabas()
 {
     m_tipoJabas.clear();
+}
+
+QList<TipoJaba *> ItemsEntrada::tipoJabasList()
+{
+    return m_tipoJabas;
 }
 
 void ItemsEntrada::appendTipoJaba(QQmlListProperty<TipoJaba> *lst, TipoJaba *tj)
@@ -97,4 +118,9 @@ TipoJaba *ItemsEntrada::tipoJabaAt(QQmlListProperty<TipoJaba> *lst, int index)
 void ItemsEntrada::clearTipoJabas(QQmlListProperty<TipoJaba> *lst)
 {
     reinterpret_cast<ItemsEntrada *>(lst->object)->clearTipoJabas();
+}
+
+void ItemsEntrada::setTipoJabas(const QList<TipoJaba *> &tipoJabas)
+{
+    m_tipoJabas = tipoJabas;
 }

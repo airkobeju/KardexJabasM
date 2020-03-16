@@ -38,7 +38,7 @@ function createKardexEntry(entry, fnt){
             fnt(JSON.parse(xhr.responseText.toString()));
         }
     };
-    xhr.open("POST", "http://localhost:8095/rest/kardex/save");
+    xhr.open("POST", "http://localhost:8095/rest/boleta/save");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(entry));
 }

@@ -2,6 +2,8 @@ QT += core quick sql network
 
 CONFIG += c++17
 
+DESTDIR = ../DebugDir
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Refer to the documentation for the
@@ -16,12 +18,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         http/getcontroller.cpp \
         http/postcontroller.cpp \
+        itemsentradamodel.cpp \
         main.cpp \
         model/itemsentrada.cpp \
         model/tipojaba.cpp \
         model/tipojabamatriz.cpp \
-        proveedorcontroller.cpp \
-        proveedormodel.cpp
+        tipojabamodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -50,11 +52,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     http/getcontroller.h \
     http/postcontroller.h \
+    itemsentradamodel.h \
     model/itemsentrada.h \
     model/tipojaba.h \
     model/tipojabamatriz.h \
-    proveedorcontroller.h \
-    proveedormodel.h
+    tipojabamodel.h
 
 DISTFILES += \
     utils/jfieldItem.txt

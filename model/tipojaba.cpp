@@ -1,11 +1,11 @@
 #include "tipojaba.h"
 
-TipoJaba::TipoJaba(QObject *parent) : QObject(parent)
+TipoJaba::TipoJaba(QObject *parent) : QObject(parent), m__id(""),m_cantidad(0)
 {
 
 }
 
-TipoJaba::TipoJaba(const QString &_id, int cantidad, TipoJabaMatriz *tjaba)
+TipoJaba::TipoJaba(const QString &_id, unsigned int cantidad, TipoJabaMatriz *tjaba)
 {
     m__id = _id;
     m_cantidad = cantidad;
@@ -19,17 +19,23 @@ QString TipoJaba::_id() const
 
 void TipoJaba::set_id(const QString &_id)
 {
+    if(_id == m__id)
+        return;
     m__id = _id;
+    emit _idChanged();
 }
 
-int TipoJaba::cantidad() const
+unsigned int TipoJaba::cantidad() const
 {
     return m_cantidad;
 }
 
-void TipoJaba::setCantidad(int cantidad)
+void TipoJaba::setCantidad(unsigned int cantidad)
 {
+    if(cantidad == m_cantidad)
+        return;
     m_cantidad = cantidad;
+    emit cantidadChanged();
 }
 
 TipoJabaMatriz *TipoJaba::tipoJaba() const
@@ -39,5 +45,8 @@ TipoJabaMatriz *TipoJaba::tipoJaba() const
 
 void TipoJaba::setTipoJaba(TipoJabaMatriz *tipoJaba)
 {
+    if(tipoJaba == m_tipoJaba)
+        return;
     m_tipoJaba = tipoJaba;
+    emit tipoJabaChanged();
 }

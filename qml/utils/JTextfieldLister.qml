@@ -2,6 +2,7 @@
 import QtQuick.Controls 2.12
 import com.jmtp.http 1.0
 import "../js/commons.js" as Js
+import com.jmtp.model 1.0 as JM
 
 FocusScope {
     id: __element
@@ -9,12 +10,11 @@ FocusScope {
     property int digitLengthCantidad: 2
     property int digitLengthAbreviacion: 3
     property int maxCantidad: 10
-    readonly property int currentCantidad: js_scripts.cantidadTotal()
+    property bool isLockMax: true
     readonly property string text: getText()
-    property ListModel modelLister: ListModel{}
     property color color: "red"
-    property ListModel matrixTipoJaba: ListModel{}
     property var  lstTipoJaba: []
+    readonly property alias modelLister: _modelLister
     property alias placeholderText: txt_jtfl_text.placeholderText
 
     signal append(var tj_obj)
@@ -27,18 +27,25 @@ FocusScope {
     QtObject {
         id: js_scripts
 
-        function cantidadTotal(){
+        //Calcula la suma de los valores de cantidad de cada item de la lista
+        function cantidadTotal() {
             var _pasador = 0;
-            for(var i=0; i<modelLister.count; i++){
-                _pasador += modelLister.get(i)['cantidad'];
+            for(var i=0; i<_modelLister.rowCount(); i++){
+                _pasador += _modelLister.get(i)['cantidad'];
             }
-                return _pasador;
-            }
+            return _pasador;
+        }
 
         function findTipoJabaByAbreviacion(abv){
             for(var i=0; i < matrixTipoJaba.count; i++){
-                if( matrixTipoJaba.get(i)['abreviacion'] === abv )
-                    return matrixTipoJaba.get(i);
+                if( matrixTipoJaba.get(i)['abreviacion'] === abv ){
+                    var mxTJ = matrixTipoJaba.get(i)
+                    return {
+                        "id": mxTJ.id,
+                        "name": mxTJ.name,
+                        "abreviacion": mxTJ.abreviacion
+                    };
+                }
             }
             throw "No se encontró el tipo de jaba";
         }
@@ -91,11 +98,8 @@ FocusScope {
                 break;
             }
         }
-        return {
-            "id": "",
-            "cantidad": v_cnt,
-            "tipoJaba":obj_tipojaba
-        };
+        var rst = {"id": "", "cantidad": v_cnt, "tipoJaba": obj_tipojaba};
+        return rst;
     }
 
     implicitHeight: 40
@@ -110,8 +114,12 @@ FocusScope {
         GetController {
             id: getCntTipoJaba
             url: "http://localhost:8095/rest/tipojabamatriz/all"
-            onReplyFinished: Js.replyFinished(strJson, matrixTipoJaba);
-        }
+            onReplyFinished:{
+                Js.replyFinished(strJson, matrixTipoJaba);
+            }
+        },
+        JM.TipoJabaModel{ id: _modelLister },
+        ListModel{ id: matrixTipoJaba }
     ]
 
     ListView {
@@ -128,9 +136,9 @@ FocusScope {
         anchors.right: txt_jtfl_text.left
         anchors.rightMargin: 2
         activeFocusOnTab: true
-        model:  modelLister
+        model: _modelLister
         delegate: MouseArea {
-            property string _id: model.id===undefined||model.id===null?null:model.id
+            property string _id: model.id===undefined||model.id===null?"":model.id
             property int  cantidad: model.cantidad
             property string abreviacion: model.tipoJaba.abreviacion
 
@@ -142,6 +150,7 @@ FocusScope {
                 font.family: "Comfortaa"
                 text: __txt_value.text
             }
+
             Text {
                 id: __txt_value
                 color: __element.color
@@ -160,7 +169,7 @@ FocusScope {
 
         Keys.onDeletePressed: {
             __element.remove(_jtfl_listview.currentIndex);
-            parent.modelLister.remove( _jtfl_listview.currentIndex );
+            _modelLister.remove( _jtfl_listview.currentIndex );
             lstTipoJaba.splice(_jtfl_listview.currentIndex,1);
         }
     }
@@ -177,14 +186,14 @@ FocusScope {
         anchors.bottomMargin: 0
 
         color: parent.color
-        width: lv_width() //parent.width/2
+        width: lv_width()
         verticalAlignment: Text.AlignVCenter
 
         onAccepted: {
             if(txt_jtfl_text.text.length < 2)
                 return;
             //contiene [cantidad, tipoJaba]
-            var _obj = {};
+            var _obj = ({});
             try{
                  _obj = validateTipoJaba( parent.digitLengthCantidad , parent.digitLengthAbreviacion, txt_jtfl_text.text);
             }catch(err){
@@ -192,25 +201,19 @@ FocusScope {
                 return;
             }
 
-            if( currentCantidad+_obj["cantidad"] > maxCantidad )
+            if( isLockMax && (js_scripts.cantidadTotal()+_obj["cantidad"] > maxCantidad) )
                 return;
             print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
             lstTipoJaba.push(_obj);
             print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
-            if(_obj['id']===""){
-                modelLister.append({
-                                       "id": "",
-                                       "cantidad":_obj["cantidad"],
-                                       "tipoJaba":_obj["tipoJaba"]
-                                   });
-            }else{
-                modelLister.append(_obj);
-            }
+
+            //FIXME: Arreglar el problema, cuando se inserta tipo jaba se borra ItemsEntrada.
+            _modelLister.append(_obj.id, _obj.cantidad, _obj.tipoJaba);
             print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
 
             append(_obj); //signal
 
-            _jtfl_listview.currentIndex = parent.modelLister.count-1;
+            _jtfl_listview.currentIndex = _modelLister.count-1;
             txt_jtfl_text.text="";
         }
     } //txt_jtfl_text

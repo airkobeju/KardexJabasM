@@ -4,13 +4,17 @@ import QtQuick.Controls 2.3
 import "js/commons.js" as Js
 import "form"
 import com.jmtp.http 1.0
+import com.jmtp.model 1.0
 
 ApplicationWindow {
     id:window
     property var proveedorList
     property var kardexModel: []
+    property TipoJabaMatriz tjm: TipoJabaMatriz{}
 
     Component.onCompleted: {
+        var obj = {"continer":{"value":"Valor del elemento"}};
+        tjm.printerJSObj(obj);
         gcProveedores.send();
         getControllerKardex.send();
         getControllerKardexSeries.send();
