@@ -21,5 +21,6 @@
         <file>fonts/Comfortaa-Regular.ttf</file>
         <file>fonts/Existence-Light.ttf</file>
         <file>qml/form/FormCompra.qml</file>
+        <file>qml/js/model.js</file>
     </qresource>
 </RCC>

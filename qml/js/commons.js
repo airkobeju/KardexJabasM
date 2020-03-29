@@ -98,6 +98,8 @@ function replyFinished(strjson, model) {
     });
     if(arguments.length === 3)
         arguments[2](json);
+
+    return model;
 }
 
 function saveTipoJaba(tipo_jaba, fnt){

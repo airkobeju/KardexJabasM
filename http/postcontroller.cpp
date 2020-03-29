@@ -3,19 +3,17 @@
 PostController::PostController(QObject *parent): QObject(parent)
 {
     networkManager = new QNetworkAccessManager(this);
+    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
 }
 
 void PostController::send(QUrl ruta)
 {
-    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
-
     QByteArray postDataSize = this->json_str.toUtf8();
-
-    QNetworkRequest request( ruta );
+    request.setUrl(ruta) ;
     request.setRawHeader("Content-Type", "application/json");
     request.setRawHeader("Content-Length", postDataSize);
 
-    QNetworkReply * reply = networkManager->post(request,this->json_str.toUtf8());
+    reply = networkManager->post(request,this->json_str.toUtf8());
 }
 
 void PostController::send()

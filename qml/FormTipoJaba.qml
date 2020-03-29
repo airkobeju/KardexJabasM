@@ -83,10 +83,22 @@ Page {
         anchors.rightMargin: 5
         anchors.left: parent.left
         anchors.leftMargin: 5
-        header: [
-            JTableColum{ text: "Nombre"; width: 200},
-            JTableColum{ text: "Abreviación"; width: 90}
-        ]
+
+        header: Rectangle {
+            z:3
+            anchors{
+                left: parent.left
+                right: parent.right
+            }
+            height: 40
+
+            color: "#3d3939"
+            Row {
+                anchors.fill: parent
+                JTableColum{ text: "Nombre"; width: 200}
+                JTableColum{ text: "Abreviación"; width: 90}
+            }
+        }
         delegate: Item {
             objectName: "delegateTipoJaba"
             height: 40

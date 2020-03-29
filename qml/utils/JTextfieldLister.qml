@@ -13,7 +13,6 @@ FocusScope {
     property bool isLockMax: true
     readonly property string text: getText()
     property color color: "red"
-    property var  lstTipoJaba: []
     readonly property alias modelLister: _modelLister
     property alias placeholderText: txt_jtfl_text.placeholderText
 
@@ -53,18 +52,13 @@ FocusScope {
     }
 
     function clear(){
-        modelLister.clear();
+        _modelLister.clear();
         txt_jtfl_text.text = "";
     }
 
     function getText(){
-        if(lstTipoJaba === undefined){
-            print("tipoJabaList: undefined");
-            return;
-        }
-
         var _str = "";
-        var _pss = lstTipoJaba;
+        var _pss = _modelLister.jsData();
         _pss.forEach(function(itm, index){
             _str += itm['cantidad']+itm['tipoJaba']['abreviacion']+', ';
         });
@@ -168,9 +162,9 @@ FocusScope {
         highlight: Rectangle { color: "transparent" ; radius: 3; border.color:"gray"; border.width: 1  }
 
         Keys.onDeletePressed: {
-            __element.remove(_jtfl_listview.currentIndex);
             _modelLister.remove( _jtfl_listview.currentIndex );
-            lstTipoJaba.splice(_jtfl_listview.currentIndex,1);
+            //signal
+            __element.remove(_jtfl_listview.currentIndex);
         }
     }
 
@@ -194,6 +188,7 @@ FocusScope {
                 return;
             //contiene [cantidad, tipoJaba]
             var _obj = ({});
+
             try{
                  _obj = validateTipoJaba( parent.digitLengthCantidad , parent.digitLengthAbreviacion, txt_jtfl_text.text);
             }catch(err){
@@ -203,18 +198,16 @@ FocusScope {
 
             if( isLockMax && (js_scripts.cantidadTotal()+_obj["cantidad"] > maxCantidad) )
                 return;
-            print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
-            lstTipoJaba.push(_obj);
-            print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
 
-            //FIXME: Arreglar el problema, cuando se inserta tipo jaba se borra ItemsEntrada.
+            print("(1)Boleta.itemsEntrada.length: "+boleta['itemsEntrada'].length);
             _modelLister.append(_obj.id, _obj.cantidad, _obj.tipoJaba);
-            print("boleta['itemsEntrada']: "+boleta['itemsEntrada'].length);
-
-            append(_obj); //signal
+            print("(2)Boleta.itemsEntrada.length: "+boleta['itemsEntrada'].length);
 
             _jtfl_listview.currentIndex = _modelLister.count-1;
             txt_jtfl_text.text="";
+            //signal
+            append(_obj);
+            print("(3)Boleta.itemsEntrada.length: "+boleta['itemsEntrada'].length);
         }
     } //txt_jtfl_text
 }

@@ -17,17 +17,14 @@ Rectangle {
     signal click(var index)
     signal doubleClick(var index)
 
+    function clear(){
+        model.clear();
+    }
+
     radius: 2
     border.color: "#2c2a2a"
     clip: true
     focus: true
-
-    Component.onCompleted: {
-//        print("File: JTableView->onCompleted | objectName: "+parent.objectName);
-//        print("==cargando componente de lista");
-//        __list.model = model;
-//        __list.delegate= delegate;
-    }
 
     data: [
         Binding {

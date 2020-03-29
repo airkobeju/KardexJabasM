@@ -37,9 +37,10 @@ public slots:
     void append(QString _id, int cantidad, QVariantMap tj );
     void printObjects(QVariantMap obj);
 
+    QVariantList jsData();
+
     TipoJaba *get(int index)const;
     void remove(int index);
-    int cantidadTotal();
 
 signals:
 

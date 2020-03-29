@@ -82,18 +82,11 @@ void TipoJabaModel::remove(int index)
     endResetModel();
 }
 
-int TipoJabaModel::cantidadTotal()
-{
-    int i = 0;
-    foreach (TipoJaba *tj, m_tipoJabas){
-        i += tj->cantidad();
-    }
-    return i;
-}
-
 void TipoJabaModel::clear()
 {
+    beginResetModel();
     m_tipoJabas.clear();
+    endResetModel();
 }
 
 void TipoJabaModel::append(QString _id, int cantidad, QVariantMap tj )
@@ -111,6 +104,24 @@ void TipoJabaModel::append(QString _id, int cantidad, QVariantMap tj )
 void TipoJabaModel::printObjects(QVariantMap obj)
 {
     qDebug()<< "Objecto JS :\n"<<obj;
+}
+
+QVariantList TipoJabaModel::jsData()
+{
+    QVariantList lista;
+    for(int i=0; i < m_tipoJabas.count(); i++){
+        QVariantMap item;
+        item.insert("id", m_tipoJabas.at(i)->_id());
+        item.insert("cantidad", m_tipoJabas.at(i)->cantidad());
+        QVariantMap sub_item;
+        sub_item.insert("id", m_tipoJabas.at(i)->tipoJaba()->_id());
+        sub_item.insert("name", m_tipoJabas.at(i)->tipoJaba()->name());
+        sub_item.insert("abreviacion", m_tipoJabas.at(i)->tipoJaba()->abreviacion());
+        item.insert("tipoJaba", sub_item);
+
+        lista.append(item);
+    }
+    return lista;
 }
 
 QHash<int, QByteArray> TipoJabaModel::roleNames() const

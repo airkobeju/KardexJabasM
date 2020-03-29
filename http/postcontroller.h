@@ -32,6 +32,8 @@ public slots:
 private:
     QUrl gc_url;
     QNetworkAccessManager *networkManager;
+    QNetworkReply * reply;
+    QNetworkRequest request;
     QString json_str;
 };
 
