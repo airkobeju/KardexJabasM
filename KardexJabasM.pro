@@ -18,12 +18,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         http/getcontroller.cpp \
         http/postcontroller.cpp \
-        itemsentradamodel.cpp \
+        kardexmodel.cpp \
         main.cpp \
-        model/itemsentrada.cpp \
+        model/boleta.cpp \
+        model/itemgrupokardex.cpp \
+        model/itemkardex.cpp \
+        model/itemsdetailboleta.cpp \
+        model/proveedor.cpp \
+        model/serieboleta.cpp \
         model/tipojaba.cpp \
         model/tipojabamatriz.cpp \
-        tipojabamodel.cpp
+        model/tipooperacion.cpp \
+        itemdetailboletamodel.cpp \
+        proveedormodel.cpp \
+        seriemodel.cpp \
+        tipojabamodel.cpp \
+        boletamodel.cpp
 
 RESOURCES += qml.qrc
 
@@ -38,25 +48,24 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-
-#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lmongocxx
-
-#INCLUDEPATH += $$PWD/../../../../../usr/local/include/mongocxx/v_noabi
-#DEPENDPATH += $$PWD/../../../../../usr/local/include/mongocxx/v_noabi
-
-#unix:!macx: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lbsoncxx
-
-#INCLUDEPATH += $$PWD/../../../../../usr/local/include/bsoncxx/v_noabi
-#DEPENDPATH += $$PWD/../../../../../usr/local/include/bsoncxx/v_noabi
-
 HEADERS += \
     http/getcontroller.h \
     http/postcontroller.h \
-    itemsentradamodel.h \
-    model/itemsentrada.h \
+    kardexmodel.h \
+    model/boleta.h \
+    model/itemgrupokardex.h \
+    model/itemkardex.h \
+    model/itemsdetailboleta.h \
+    model/proveedor.h \
+    model/serieboleta.h \
     model/tipojaba.h \
     model/tipojabamatriz.h \
-    tipojabamodel.h
+    model/tipooperacion.h \
+    itemdetailboletamodel.h \
+    proveedormodel.h \
+    seriemodel.h \
+    tipojabamodel.h \
+    boletamodel.h
 
 DISTFILES += \
     utils/jfieldItem.txt

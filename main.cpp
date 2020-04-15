@@ -1,57 +1,39 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QFont>
+#include <QFontDatabase>
+#include <QVariant>
+#include <QDebug>
 
 #include "http/getcontroller.h"
 #include "http/postcontroller.h"
 
-//#include <bsoncxx/builder/basic/document.hpp>
-//#include <bsoncxx/builder/basic/kvp.hpp>
-//#include <bsoncxx/json.hpp>
-//#include <bsoncxx/stdx/make_unique.hpp>
-//#include <bsoncxx/builder/stream/document.hpp>
-
-//#include <mongocxx/client.hpp>
-//#include <mongocxx/instance.hpp>
-//#include <mongocxx/logger.hpp>
-//#include <mongocxx/options/client.hpp>
-//#include <mongocxx/uri.hpp>
-
-#include <QFont>
-#include <QFontDatabase>
-#include <QVariant>
-
+#include "model/boleta.h"
+#include "model/proveedor.h"
+#include "model/serieboleta.h"
+#include "model/tipooperacion.h"
 #include "model/tipojabamatriz.h"
 #include "model/tipojaba.h"
-#include "model/itemsentrada.h"
-#include "itemsentradamodel.h"
+#include "model/itemsdetailboleta.h"
+#include "model/itemgrupokardex.h"
+#include "model/itemkardex.h"
+
+#include "boletamodel.h"
+#include "itemdetailboletamodel.h"
 #include "tipojabamodel.h"
+#include "kardexmodel.h"
+#include "seriemodel.h"
+#include "proveedormodel.h"
 
 int main(int argc, char *argv[])
 {
-    /**
-    mongocxx::instance instance{}; // This should be done only once.
-    mongocxx::uri uri("mongodb://localhost:27017");
-    mongocxx::client client(uri);
-
-    mongocxx::database db = client["kardexjabas"];
-    mongocxx::collection coll = db["proveedor"];
-
-    auto builder = bsoncxx::builder::stream::document{};
-    bsoncxx::document::value doc_value = builder
-      << "nombre" << "Juan Manuel"
-      << "apellido" << "Ticona Pacheco"
-      << bsoncxx::builder::stream::finalize;
-
-    bsoncxx::stdx::optional<mongocxx::result::insert_one> result = coll.insert_one(doc_value.view());
-**/
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
     app.setOrganizationName("JMTP");
     app.setOrganizationDomain("jmtp.com");
     app.setApplicationName("Jabas Kardex");
-
 
     QFontDatabase::addApplicationFont("qrc:/fonts/Comfortaa-Regular.ttf");
     QFontDatabase::addApplicationFont("qrc:/fonts/Existence-Light.ttf");
@@ -62,13 +44,30 @@ int main(int argc, char *argv[])
     qmlRegisterType<GetController>("com.jmtp.http", 1, 0, "GetController");
     qmlRegisterType<PostController>("com.jmtp.http", 1, 0, "PostController");
     //Model types
+    qmlRegisterType<Boleta>("com.jmtp.model", 1, 0, "Boleta");
+    qmlRegisterType<SerieBoleta>("com.jmtp.model", 1, 0, "SerieBoleta");
+    qmlRegisterType<TipoOperacion>("com.jmtp.model", 1, 0, "TipoOperacion");
     qmlRegisterType<TipoJabaMatriz>("com.jmtp.model", 1, 0, "TipoJabaMatriz");
     qmlRegisterType<TipoJaba>("com.jmtp.model", 1, 0, "TipoJaba");
-    qmlRegisterType<ItemsEntrada>("com.jmtp.model", 1, 0, "ItemsEntrada");
-    qmlRegisterType<ItemsEntradaModel>("com.jmtp.model", 1, 0, "ItemsEntradaModel");
+    qmlRegisterType<ItemsDetailBoleta>("com.jmtp.model", 1, 0, "ItemsDetailBoleta");
+    qmlRegisterType<Proveedor>("com.jmtp.model", 1, 0, "Proveedor");
+    //Objetos para el modelo de Kardex  ItemKardex->ItemGrupoKardex
+    qmlRegisterType<ItemGrupoKardex>("com.jmtp.model", 1, 0, "ItemGrupoKardex");
+    qmlRegisterType<ItemKardex>("com.jmtp.model", 1, 0, "ItemKardex");
+    //Models continer
+    qmlRegisterType<BoletaModel>("com.jmtp.model", 1, 0, "BoletaModel");
+    qmlRegisterType<ItemDetailBoletaModel>("com.jmtp.model", 1, 0, "ItemDetailBoletaModel");
     qmlRegisterType<TipoJabaModel>("com.jmtp.model", 1, 0, "TipoJabaModel");
+    qmlRegisterType<KardexModel>("com.jmtp.model", 1, 0, "KardexModel");
+    qmlRegisterType<SerieModel>("com.jmtp.model", 1, 0, "SerieModel");
+    qmlRegisterType<ProveedorModel>("com.jmtp.model", 1, 0, "ProveedorModel");
 
     QQmlApplicationEngine engine;
+
+//    KardexModel *kardexModel = new KardexModel();
+//    qDebug()<<"**Cantidad de Items: "<< kardexModel->rowCount();
+//    engine.rootContext()->setContextProperty("kardexModel", kardexModel);
+
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

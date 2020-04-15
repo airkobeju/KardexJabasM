@@ -1,11 +1,11 @@
-#include "itemsentradamodel.h"
+#include "itemdetailboletamodel.h"
 
-ItemsEntradaModel::ItemsEntradaModel(QObject *parent)
+ItemDetailBoletaModel::ItemDetailBoletaModel(QObject *parent)
     : QAbstractListModel(parent)
 {
 }
 
-int ItemsEntradaModel::rowCount(const QModelIndex &parent) const
+int ItemDetailBoletaModel::rowCount(const QModelIndex &parent) const
 {
     // For list models only the root node (an invalid parent) should return the list's size. For all
     // other (valid) parents, rowCount() should return 0 so that it does not become a tree model.
@@ -15,7 +15,7 @@ int ItemsEntradaModel::rowCount(const QModelIndex &parent) const
     return m_items.count();
 }
 
-QVariant ItemsEntradaModel::data(const QModelIndex &index, int role) const
+QVariant ItemDetailBoletaModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || m_items.isEmpty())
         return QVariant();
@@ -34,7 +34,7 @@ QVariant ItemsEntradaModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-bool ItemsEntradaModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool ItemDetailBoletaModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (data(index, role) != value) {
 
@@ -50,7 +50,7 @@ bool ItemsEntradaModel::setData(const QModelIndex &index, const QVariant &value,
             break;
         case TipoJabaRole:
             m_items.at(index.row())->clearTipoJabas();
-            foreach (QVariant tj, value.toList()) {
+            for(QVariant tj: value.toList()){
                 TipoJaba *j = tj.value<TipoJaba *>();
                 m_items.at(index.row())->appendTipoJaba(j);
             }
@@ -63,7 +63,7 @@ bool ItemsEntradaModel::setData(const QModelIndex &index, const QVariant &value,
     return false;
 }
 
-Qt::ItemFlags ItemsEntradaModel::flags(const QModelIndex &index) const
+Qt::ItemFlags ItemDetailBoletaModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return Qt::NoItemFlags;
@@ -71,7 +71,7 @@ Qt::ItemFlags ItemsEntradaModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEditable; // FIXME: Implement me!
 }
 
-QHash<int, QByteArray> ItemsEntradaModel::roleNames() const
+QHash<int, QByteArray> ItemDetailBoletaModel::roleNames() const
 {
     QHash<int, QByteArray> names;
     names[IdRole] = "_id";
@@ -81,14 +81,14 @@ QHash<int, QByteArray> ItemsEntradaModel::roleNames() const
     return names;
 }
 
-void ItemsEntradaModel::appendItemsEntrada(ItemsEntrada *const &items)
+void ItemDetailBoletaModel::appendItemsEntrada(ItemsDetailBoleta *const &items)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_items.append(items);
     endInsertRows();
 }
 
-void ItemsEntradaModel::appendAtTipoJaba(int index, TipoJaba *const &tjaba)
+void ItemDetailBoletaModel::appendAtTipoJaba(int index, TipoJaba *const &tjaba)
 {
     m_items.at(index)->appendTipoJaba(tjaba);
 }

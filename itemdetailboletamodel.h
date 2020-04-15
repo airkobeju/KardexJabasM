@@ -1,11 +1,10 @@
-#ifndef ITEMSENTRADAMODEL_H
-#define ITEMSENTRADAMODEL_H
+#ifndef ITEMDETAILBOLETAMODEL_H
+#define ITEMDETAILBOLETAMODEL_H
 
 #include <QAbstractListModel>
+#include "model/itemsdetailboleta.h"
 
-#include "model/itemsentrada.h"
-
-class ItemsEntradaModel : public QAbstractListModel
+class ItemDetailBoletaModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
@@ -15,7 +14,7 @@ public:
         PesoRole= Qt::UserRole + 3,
         TipoJabaRole= Qt::UserRole + 4
     };
-    explicit ItemsEntradaModel(QObject *parent = nullptr);
+    explicit ItemDetailBoletaModel(QObject *parent = nullptr);
 
     // Basic functionality:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -30,12 +29,12 @@ public:
 
     virtual QHash<int, QByteArray> roleNames() const override;
 
-    void appendItemsEntrada(ItemsEntrada *const &items);
+    void appendItemsEntrada(ItemsDetailBoleta *const &items);
     void appendAtTipoJaba(int index, TipoJaba *const &tjaba);
 
 private:
-    QList<ItemsEntrada *> m_items;
+    QList<ItemsDetailBoleta *> m_items;
 
 };
 
-#endif // ITEMSENTRADAMODEL_H
+#endif // ITEMDETAILBOLETAMODEL_H

@@ -19,8 +19,12 @@ public:
     QUrl url() const;
     void setUrl(const QUrl &value);
 
+    QNetworkAccessManager *networkManager() const;
+
 signals:
-    void replyFinished(QString strJson);
+    void replyFinishedStr(QString strJson);
+    void replyFinishedJsArr(QVariantList arrResponse);
+    void replyFinishedJsObj(QVariantMap objResponse);
     void urlChanged();
 
 public slots:
@@ -28,6 +32,9 @@ public slots:
 
 private:
     QUrl gc_url;
+    QNetworkAccessManager *m_networkManager;
+    QNetworkRequest request;
+    QNetworkReply* currentReply;
 };
 
 #endif // GETCONTROLLER_H

@@ -27,11 +27,7 @@ Rectangle {
     focus: true
 
     data: [
-        Binding {
-            target: __list
-            property: "model"
-            value: model
-        }
+        Binding { target: __list; property: "model"; value: model  }
     ]
 
 
@@ -56,8 +52,6 @@ Rectangle {
         highlightMoveDuration: 500
         highlightMoveVelocity: 400
 
-        onCurrentIndexChanged: {
-        }
     }
 
 }

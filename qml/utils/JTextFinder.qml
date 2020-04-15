@@ -2,10 +2,9 @@ import QtQuick 2.12
 
 FocusScope {
     id: focusScope
-    focus: true
 
     property var textControl:txtInput
-    property ListModel list: ListModel{}
+    property var list: ListModel{}
     property int indexSelected:0
     property alias radius: rectangle.radius
     property alias text: txtInput.text
@@ -25,6 +24,7 @@ FocusScope {
     y: 0
     width: 324
     height: 41
+    focus: true
 
 
     Rectangle {
@@ -43,22 +43,23 @@ FocusScope {
 
             function search(){
                 var _list = list;
-                print("list length: "+list.count);
+                print("list length: "+list.length);
                 if(txtInput.text.length > 0){
                     var isFind=false;
 
-                    for(var i=0; i <= list.count; i++){
+                    for(var i=0; i <= list.length; i++){
                         if(!isFind){
                             var pos;
                             try{
-                                pos = list.get(i).name.search(txtInput.text);
+                                var _name = list[i].name;
+                                pos = _name.search(txtInput.text);
                             }catch(err){
                                 console.exception("La cadena ingresada no retorna candidatos:\n"+err);
                                 return;
                             }
 
                             if(pos === 0){
-                                txtPlaceholder.text = list.get(i).name;
+                                txtPlaceholder.text = list[i].name;
                                 indexSelected = i;
                                 isFind=true;
                             }
@@ -71,10 +72,10 @@ FocusScope {
 
             function acceptInput(){
                 print("Intro pressed");
-                print("Proveedor: "+"["+list.get(indexSelected).id+"]"+list.get(indexSelected).lastName+", "+list.get(indexSelected).firstName);
-                txtInput.text =  list.get(indexSelected).name;
-                currentObject = list.get( indexSelected );
-                itemSelected(list.get( indexSelected ));
+                print("Proveedor: "+"["+list[indexSelected].id+"]"+list[indexSelected].lastName+", "+list[indexSelected].firstName);
+                txtInput.text =  list[indexSelected].name;
+                currentObject = list[ indexSelected ];
+                itemSelected(list[ indexSelected ]);
             }
 
             y: 15

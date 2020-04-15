@@ -22,5 +22,6 @@
         <file>fonts/Existence-Light.ttf</file>
         <file>qml/form/FormCompra.qml</file>
         <file>qml/js/model.js</file>
+        <file>qml/utils/JTableHeaders.qml</file>
     </qresource>
 </RCC>

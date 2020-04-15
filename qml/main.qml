@@ -18,13 +18,13 @@ ApplicationWindow {
     property ListModel modelTipoJaba: ListModel{}
 
     Component.onCompleted: {
-        var obj = {"continer":{"value":"Valor del elemento"}};
-        tjm.printerJSObj(obj);
         gcProveedores.send();
-        postSerieBoletaCompra.send();
+        getSerieBoletaCompra.send();
         //getControllerKardex.send();
         getControllerKardexSeries.send();
         getControllerTipoJaba.send();
+
+        serieModel.load();
     }
 
     visible: true
@@ -37,13 +37,28 @@ ApplicationWindow {
         Binding { target: frmTipoJaba; property: "modelTipoJaba"; value: modelTipoJaba },
         Binding { target: frmSerie; property: "series"; value: modelKardexSeries },
         GetController{
-            id: postSerieBoletaCompra
+            id: getBoletaList
+            url: "http://localhost:8095/rest/boleta"
+            onReplyFinishedJsArr:{
+//                arrResponse.forEach(function(item, index){
+//                    print("Proveedor ["+index+"]: "+ item.proveedor.name);
+//                });
+            }
+        },
+        GetController{
+            id: getSerieBoletaCompra
             url: "http://localhost:8095/rest/serieboleta/by_operacion/COMPRA"
-            onReplyFinished: {
+            onReplyFinishedStr: {
                 modelKardexSeries = Js.replyFinished(strJson, modelKardexSeries);
             }
+        },
+        SerieModel {
+            id: serieModel
+            onReplyFinished: {
+                print("Series rowCont: "+ length);
+                frmCompras.series = serieModel;
+            }
         }
-
     ]
 
     Drawer{
@@ -54,6 +69,15 @@ ApplicationWindow {
         Column {
             anchors.fill: parent
 
+//            ItemDelegate {
+//                text: qsTr(kardexLanding.title)
+//                width: parent.width
+//                onClicked: {
+//                    swipeView.currentIndex = 0;
+//                    drawer.close()
+//                }
+//            }
+
             ItemDelegate {
                 text: qsTr(frmCompras.title)
                 width: parent.width
@@ -62,27 +86,9 @@ ApplicationWindow {
                     drawer.close()
                 }
             }
-            /*
-            ItemDelegate {
-                text: qsTr(kardexLanding.title)
-                width: parent.width
-                onClicked: {
-                    swipeView.currentIndex = 1;
-                    drawer.close()
-                }
-            }*/
-
-//            ItemDelegate {
-//                text: qsTr(frmKardex.title)
-//                width: parent.width
-//                onClicked: {
-//                    swipeView.currentIndex = 1;
-//                    drawer.close()
-//                }
-//            }
 
             ItemDelegate {
-                text: qsTr(frmProveedor.title)
+                text: qsTr(frmKardex.title)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 1;
@@ -91,7 +97,7 @@ ApplicationWindow {
             }
 
             ItemDelegate {
-                text: qsTr(frmSerie.title)
+                text: qsTr(frmProveedor.title)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 2;
@@ -100,10 +106,19 @@ ApplicationWindow {
             }
 
             ItemDelegate {
-                text: qsTr(frmTipoJaba.title)
+                text: qsTr(frmSerie.title)
                 width: parent.width
                 onClicked: {
                     swipeView.currentIndex = 3;
+                    drawer.close()
+                }
+            }
+
+            ItemDelegate {
+                text: qsTr(frmTipoJaba.title)
+                width: parent.width
+                onClicked: {
+                    swipeView.currentIndex = 4;
                     drawer.close()
                 }
             }
@@ -132,7 +147,7 @@ ApplicationWindow {
     GetController {
         id: gcProveedores
         url: "http://localhost:8095/rest/proveedor/all"
-        onReplyFinished: Js.replyFinished(strJson, modelProveedores)
+        onReplyFinishedStr: Js.replyFinished(strJson, modelProveedores)
     }
 
 //    GetController {
@@ -144,7 +159,7 @@ ApplicationWindow {
     GetController {
         id: getControllerKardexSeries
         url: "http://localhost:8095/rest/kardexserie/all"
-        onReplyFinished: {
+        onReplyFinishedStr: {
             //modelKardexSeries = Js.replyFinished(strJson, modelKardexSeries);
         }
     }
@@ -152,7 +167,7 @@ ApplicationWindow {
     GetController {
         id: getControllerTipoJaba
         url: "http://localhost:8095/rest/tipojabamatriz/all"
-        onReplyFinished: Js.replyFinished(strJson, modelTipoJaba);
+        onReplyFinishedStr: Js.replyFinished(strJson, modelTipoJaba);
     }
 
     SwipeView {
@@ -160,40 +175,27 @@ ApplicationWindow {
         anchors.fill: parent
         currentIndex: 0
 
-        FormCompra {
-            id: frmCompras
-            series: modelKardexSeries
-            proveedores: modelProveedores
-        }
-
-//        KardexLanding{
+//        KardexLanding {
 //            id: kardexLanding
 //            //modelEntries: modelKardexLanding
 //            Component.onCompleted: {
 //                //print("#### KardexLanding");
 //            }
-
 //        }
 
-//        FormKardex {
-//            id: frmKardex
-//            series: modelKardexSeries
-//            proveedores: modelProveedores
+        FormCompra {
+            id: frmCompras
+            //proveedores: modelProveedores
+        }
 
-//            onEntrySaved: function(obj){
-//                kardexLanding.addEntry(obj);
-//            }
-//            Component.onCompleted: {
-//                print("#### FormKardex");
-//            }
-//        }
+        FormKardex {
+            id: frmKardex
+
+        }
 
         FormProveedor{
             id: frmProveedor
             proveedores: modelProveedores
-            Component.onCompleted: {
-                print("#### FormProveedor");
-            }
         }
 
         FormSerie {

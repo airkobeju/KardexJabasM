@@ -1,7 +1,8 @@
 #include "tipojabamatriz.h"
 #include <QDebug>
 
-TipoJabaMatriz::TipoJabaMatriz(QObject *parent) : QObject(parent)
+TipoJabaMatriz::TipoJabaMatriz(QObject *parent) :
+    QObject(parent), m__id(""),m_name(""), m_abreviacion("")
 {
 
 }
@@ -65,7 +66,34 @@ bool TipoJabaMatriz::operator==(const TipoJabaMatriz &tjm)
     return (tjm._id() == m__id && tjm.name() == m_name && tjm.abreviacion() == m_abreviacion);
 }
 
+QVariantMap TipoJabaMatriz::toJS() const
+{
+    QMap<QString, QVariant> obj;
+    obj.insert("id", this->_id());
+    obj.insert("name", this->name());
+    obj.insert("abreviacion", this->abreviacion());
+    obj.insert("defaultJaba", this->defaultJaba());
+
+    if( this->_id()=="" && this->name()=="" && this->abreviacion()=="" )
+        return QVariantMap();
+
+    return QVariantMap(obj);
+}
+
 void TipoJabaMatriz::printerJSObj(QVariantMap obj)
 {
     qDebug()<< obj;
+}
+
+bool TipoJabaMatriz::defaultJaba() const
+{
+    return m_defaultJaba;
+}
+
+void TipoJabaMatriz::setDefaultJaba(bool defaultJaba)
+{
+    if(defaultJaba == m_defaultJaba)
+        return;
+    m_defaultJaba = defaultJaba;
+    emit defaultJabaChanged();
 }

@@ -16,7 +16,7 @@ FocusScope {
     readonly property alias modelLister: _modelLister
     property alias placeholderText: txt_jtfl_text.placeholderText
 
-    signal append(var tj_obj)
+    signal append(var tjObj)
     signal remove(var itm_index)
 
     Component.onCompleted: {
@@ -37,7 +37,7 @@ FocusScope {
 
         function findTipoJabaByAbreviacion(abv){
             for(var i=0; i < matrixTipoJaba.count; i++){
-                if( matrixTipoJaba.get(i)['abreviacion'] === abv ){
+                if( matrixTipoJaba.get(i).abreviacion === abv ){
                     var mxTJ = matrixTipoJaba.get(i)
                     return {
                         "id": mxTJ.id,
@@ -108,7 +108,7 @@ FocusScope {
         GetController {
             id: getCntTipoJaba
             url: "http://localhost:8095/rest/tipojabamatriz/all"
-            onReplyFinished:{
+            onReplyFinishedStr:{
                 Js.replyFinished(strJson, matrixTipoJaba);
             }
         },
@@ -196,17 +196,17 @@ FocusScope {
                 return;
             }
 
-            if( isLockMax && (js_scripts.cantidadTotal()+_obj["cantidad"] > maxCantidad) )
+            if( isLockMax && (js_scripts.cantidadTotal()+_obj.cantidad > maxCantidad) )
                 return;
 
-            print("(1)Boleta.itemsEntrada.length: "+boleta['itemsEntrada'].length);
+            print("(1)Boleta.itemsEntrada.length: "+boleta.itemsEntrada.length);
             _modelLister.append(_obj.id, _obj.cantidad, _obj.tipoJaba);
-            print("(2)Boleta.itemsEntrada.length: "+boleta['itemsEntrada'].length);
+            print("(2)Boleta.itemsEntrada.length: "+boleta.itemsEntrada.length);
 
-            _jtfl_listview.currentIndex = _modelLister.count-1;
+            _jtfl_listview.currentIndex = _modelLister.rowCount()-1;
             txt_jtfl_text.text="";
             //signal
-            append(_obj);
+            append(_modelLister.get(_modelLister.rowCount()-1));
             print("(3)Boleta.itemsEntrada.length: "+boleta['itemsEntrada'].length);
         }
     } //txt_jtfl_text

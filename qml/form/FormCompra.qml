@@ -14,7 +14,8 @@ Page {
     property ListModel tipoJabaList: ListModel{}
     property int cantidadEntrada:0
     property int cantidadSalida:0
-    property variant boleta: {
+    property alias boleta: objBoleta
+        /*{
         "id": "",
         "serie":cmbCompraSerie.model.get( cmbCompraSerie.currentIndex ),
         "numeracion": parseInt( txtCompraNumeracion.text ),
@@ -33,8 +34,10 @@ Page {
                 ],
         "venta": false,
         "close": false
-    }
+    }*/
     property int cantidadSalidaTotal: 0
+
+    signal seriesLoad()
 
     QtObject {
         id: js_commons
@@ -92,12 +95,17 @@ Page {
         function cantidadSalidaTotal(data){
             var ct_salida = 0;
             boleta.itemsSalida[0].tipoJaba = data;
-            boleta['itemsSalida'].forEach(function(item, index){
-                item['tipoJaba'].forEach(function(itm, i){
-                    //print(JSON.stringify(itm));
-                    ct_salida += itm['cantidad'];
-                });
-            });
+            for(var i in boleta.itemsSalida){
+                for(var ii in boleta.itemsSalida[i].tipoJaba){
+                    ct_salida += boleta.itemsSalida[i].tipoJaba[ii].cantidad;
+                }
+            }
+//            boleta['itemsSalida'].forEach(function(item, index){
+//                item['tipoJaba'].forEach(function(itm, i){
+//                    //print(JSON.stringify(itm));
+//                    ct_salida += itm['cantidad'];
+//                });
+//            });
             boleta.itemsSalida[0].cantidad = ct_salida;
             lblCompraDevolucionJabas.text = qsTr("Devolución de Jabas: " + ct_salida);
         }
@@ -105,6 +113,7 @@ Page {
     }
 
     Component.onCompleted: {
+        proveedorModel.load();
         js_commons.setFecha();
         jtvCompraItems.model.append( {
                                         "id": "",
@@ -113,17 +122,30 @@ Page {
                                         "nota": "",
                                         "tipoJaba": []
                                     } );
+
     }
 
     objectName: "FormCompra"
     title: qsTr("Boleta de Compras")
     data: [
+        Binding { target: objBoleta; property: "serie"; value: cmbCompraSerie.model.at(cmbCompraSerie.currentIndex) },
+        Binding { target: objBoleta; property: "numeracion"; value: parseInt(txtCompraNumeracion.text)},
+        Binding { target: objBoleta; property: "fecha"; value: txtCompraFecha.text},
+        Binding { target: jtxtCompraProveedor; property: "list"; value: proveedorModel.proveedores},
+        JM.Boleta{
+            id: objBoleta
+            proveedor: jtxtCompraProveedor.currentObject
+        },
+        JM.ProveedorModel{
+            id: proveedorModel
+            onReplyFinished: {
+                print("Largo de proveedores: "+count());
+            }
+        },
         HTTP.PostController {
             id: frmCompra_postController
             url: "http://localhost:8095/rest/boleta/save"
             onReplyFinished: {
-                print("Respuesta del servidor");
-                print(strJson);
                 var blt = JSON.parse( strJson );
                 if(blt['id'] !== "" )
                     js_commons.clearForm();
@@ -164,9 +186,9 @@ Page {
 
         onClicked: {
             //revisando si hay devolucion
-            if(boleta['itemsSalida'][0]['cantidad'] === 0)
-                boleta['itemsSalida'] = [];
-            var pssBoleta = JSON.stringify( boleta );
+            if(boleta.itemsSalida[0].cantidad === 0)
+                boleta.clearItemsSalida();
+            var pssBoleta = JSON.stringify( boleta.toJS() );
             frmCompra_postController.jsonString = pssBoleta;
             //Envia el objet Json con los datos de la boleta para ser guardados.
             frmCompra_postController.send();
@@ -187,6 +209,9 @@ Page {
         anchors.topMargin: 0
 
         KeyNavigation.tab: txtCompraNumeracion
+        onCurrentIndexChanged: {
+            boleta.serie = cmbCompraSerie.model.at(cmbCompraSerie.currentIndex);
+        }
 
     }
 
@@ -294,8 +319,9 @@ Page {
             }
 
             function setEntryData(){
-                rw_vk_data.children[0].text = boleta['itemsEntrada'][index]['cantidad'];
-                rw_vk_data.children[1].text = boleta['itemsEntrada'][index]['peso'];
+                var bol = boleta;
+                rw_vk_data.children[0].text = boleta.itemsEntrada[index].cantidad;
+                rw_vk_data.children[1].text = boleta.itemsEntrada[index].peso;
                 rw_vk_data.children[2].text = jtfl_vk_tipojaba.getText();
             }
 
@@ -360,7 +386,7 @@ Page {
                     width: 90; height: parent.height; verticalAlignment: Text.AlignVCenter
                     KeyNavigation.tab: txt_vk_peso
                     onTextChanged: {
-                        jtvCompraItems.model.get(index)['cantidad'] = txt_vk_peso_cantidad.text;
+                        jtvCompraItems.model.get(index)['cantidad'] = parseInt(txt_vk_peso_cantidad.text);
                     }
                 }
                 TextField { id: txt_vk_peso; color: "red"; leftPadding: 10; width: 180
@@ -404,7 +430,9 @@ Page {
                             "nota": "",
                             "tipoJaba": jtfl_vk_tipojaba.modelLister.jsData()
                         };
-                        boleta.itemsEntrada.push(item_entrada);
+                        var _bol = boleta.itemsEntrada;
+                        //boleta.itemsEntrada.push(item_entrada);
+                        boleta.appendItemsEntradas(item_entrada);
 
                         parent.state = "selected";
 
@@ -425,9 +453,10 @@ Page {
                     parent.setEntryData();
 
                     cantidadEntrada=0;
-                    boleta['itemsEntrada'].forEach(function(item, index){
-                        cantidadEntrada += item['cantidad'];
-                    });
+                    var borrar = boleta.itemsEntrada;
+                    for(var i in boleta.itemsEntrada){
+                        cantidadEntrada += boleta.itemsEntrada[i].cantidad;
+                    }
                     print("Entradas de BOLETA: " + JSON.stringify(boleta.itemsEntrada));
                 }
             }

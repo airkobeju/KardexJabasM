@@ -5,7 +5,7 @@ TipoJaba::TipoJaba(QObject *parent) : QObject(parent), m__id(""),m_cantidad(0)
 
 }
 
-TipoJaba::TipoJaba(const QString &_id, unsigned int cantidad, TipoJabaMatriz *tjaba)
+TipoJaba::TipoJaba(const QString &_id, signed int cantidad, TipoJabaMatriz *tjaba)
 {
     m__id = _id;
     m_cantidad = cantidad;
@@ -49,4 +49,32 @@ void TipoJaba::setTipoJaba(TipoJabaMatriz *tipoJaba)
         return;
     m_tipoJaba = tipoJaba;
     emit tipoJabaChanged();
+}
+
+void TipoJaba::setTipoJaba(const QVariantMap &tipoJaba)
+{
+    // _id, name,abreviacion
+    TipoJabaMatriz *tj = new TipoJabaMatriz();
+    tj->set_id(tipoJaba.value("id").toString());
+    tj->setName(tipoJaba.value("name").toString());
+    tj->setAbreviacion(tipoJaba.value("abreviacion").toString());
+    setTipoJaba(tj);
+}
+
+TipoJaba &TipoJaba::operator=(const TipoJaba &tj)
+{
+    m__id = tj._id();
+    m_cantidad = tj.cantidad();
+    m_tipoJaba = tj.tipoJaba();
+    return *this;
+}
+
+QVariantMap TipoJaba::toJS() const
+{
+    QMap<QString, QVariant> obj;
+    obj.insert("id", this->_id());
+    obj.insert("cantidad", this->cantidad());
+    obj.insert("tipoJaba", this->tipoJaba()->toJS());
+
+    return QVariantMap(obj);
 }

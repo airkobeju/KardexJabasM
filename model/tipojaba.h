@@ -2,7 +2,7 @@
 #define TIPOJABA_H
 
 #include <QObject>
-#include <QMetaType>
+#include <QVariant>
 #include "tipojabamatriz.h"
 
 class TipoJaba : public QObject
@@ -11,10 +11,10 @@ class TipoJaba : public QObject
 
     Q_PROPERTY(QString _id READ _id WRITE set_id NOTIFY _idChanged)
     Q_PROPERTY(unsigned int cantidad READ cantidad WRITE setCantidad NOTIFY cantidadChanged)
-    Q_PROPERTY(TipoJabaMatriz* tipoJaba READ tipoJaba WRITE setTipoJaba NOTIFY tipoJabaChanged)
+    Q_PROPERTY(TipoJabaMatriz  *tipoJaba READ tipoJaba WRITE setTipoJaba NOTIFY tipoJabaChanged)
 public:
     explicit TipoJaba(QObject *parent = nullptr);
-    TipoJaba(const QString &_id, unsigned int cantidad, TipoJabaMatriz *tjaba);
+    TipoJaba(const QString &_id, signed int cantidad, TipoJabaMatriz *tjaba);
 
     QString _id() const;
     void set_id(const QString &_id);
@@ -24,6 +24,11 @@ public:
 
     TipoJabaMatriz *tipoJaba() const;
     void setTipoJaba(TipoJabaMatriz *tipoJaba);
+    Q_INVOKABLE void setTipoJaba(const QVariantMap &tipoJaba);
+
+    TipoJaba &operator=(const TipoJaba &tj);
+
+    QVariantMap toJS() const;
 
 signals:
     void _idChanged();
