@@ -169,7 +169,7 @@ Page {
         Shortcut {
             sequence: "Ctrl+Shift+Alt+B"
             onActivated: {
-                print("Monstrando contenido de boleta\n" + JSON.stringify(boleta));
+                print("Monstrando contenido de boleta\n" + JSON.stringify(boleta.toJS()));
             }
         }
     ]
@@ -404,7 +404,7 @@ Page {
                     onAppend: {
                         //jtvCompraItems.model.get(index)['tipoJaba'] = [];
                         //jtvCompraItems.model.get(index)['tipoJaba'] = txt_vk_peso_cantidad.tipoJabaList;
-                        print( JSON.stringify(tj_obj) );
+                        print( JSON.stringify(tjObj) );
                     }
 
                 }
@@ -425,7 +425,7 @@ Page {
                     if(parent.isNew){
                         var item_entrada = {
                             "id": "",
-                            "cantidad": parseInt( txt_vk_peso_cantidad.text ),
+                            "cantidad": parseInt(txt_vk_peso_cantidad.text),
                             "peso": parseFloat(txt_vk_peso.text),
                             "nota": "",
                             "tipoJaba": jtfl_vk_tipojaba.modelLister.jsData()
@@ -452,12 +452,14 @@ Page {
                     //coloca los valores en las etiquetas del Row de datos no editables
                     parent.setEntryData();
 
-                    cantidadEntrada=0;
-                    var borrar = boleta.itemsEntrada;
-                    for(var i in boleta.itemsEntrada){
-                        cantidadEntrada += boleta.itemsEntrada[i].cantidad;
-                    }
-                    print("Entradas de BOLETA: " + JSON.stringify(boleta.itemsEntrada));
+                    cantidadEntrada=boleta.countCantidadEntrada();
+//                    var borrar = boleta.itemsEntrada;
+//                    for(var i in boleta.itemsEntrada){
+//                        cantidadEntrada += boleta.itemsEntrada[i].cantidad;
+//                    }
+                    //print("Entradas de BOLETA: " + JSON.stringify(boleta.itemsEntrada));
+                    var pss_bol = boleta;
+                    print("Item asignado");
                 }
             }
 
@@ -548,8 +550,15 @@ Page {
             top: lblCompraDevolucionJabas.bottom
             topMargin: 10
         }
-        onAppend: js_commons.cantidadSalidaTotal(modelLister.jsData())
-        onRemove: js_commons.cantidadSalidaTotal(modelLister.jsData())
+        onAppend:{
+            var tj = boleta.itemsSalida[0];
+            boleta.itemsSalida[0].appendTipoJaba(tjObj.toJS());
+            boleta.itemsSalida[0].cantidad = boleta.countCantidadSalida();
+        }
+        onRemove:{
+            boleta.itemsSalida[0].removeTipoJabaAt(itmIndex);
+            boleta.itemsSalida[0].cantidad = boleta.countCantidadSalida();
+        }
     }
 
 }

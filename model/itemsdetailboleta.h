@@ -41,6 +41,7 @@ public:
 
     QList<TipoJaba *> tipoJabasList() const;
     void setTipoJabas(const QList<TipoJaba *> &tipoJabas);
+    Q_INVOKABLE void removeTipoJabaAt(int);
 
     QVariantMap toJS() const;
 

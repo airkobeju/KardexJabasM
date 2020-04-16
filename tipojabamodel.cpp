@@ -70,6 +70,16 @@ void TipoJabaModel::appendTipoJaba(TipoJaba * const &tjaba)
     endInsertRows();
 }
 
+int TipoJabaModel::cantidadTotal() const
+{
+    int count = 0;
+    for(TipoJaba *t: m_tipoJabas){
+        count += t->cantidad();
+    }
+
+    return count;
+}
+
 TipoJaba *TipoJabaModel::get(int index) const
 {
     return m_tipoJabas.at(index);

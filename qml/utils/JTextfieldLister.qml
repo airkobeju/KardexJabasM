@@ -17,7 +17,7 @@ FocusScope {
     property alias placeholderText: txt_jtfl_text.placeholderText
 
     signal append(var tjObj)
-    signal remove(var itm_index)
+    signal remove(var itmIndex)
 
     Component.onCompleted: {
         getCntTipoJaba.send();

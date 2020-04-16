@@ -279,6 +279,28 @@ QVariantMap Boleta::toJS() const
     return QVariantMap(obj);
 }
 
+int Boleta::countCantidadEntrada() const
+{
+    int count = 0;
+    for(ItemsDetailBoleta *b: m_itemsEntrada){
+        for(TipoJaba *j: b->tipoJabasList()){
+            count += j->cantidad();
+        }
+    }
+    return count;
+}
+
+int Boleta::countCantidadSalida() const
+{
+    int count = 0;
+    for(ItemsDetailBoleta *b: m_itemsSalida){
+        for(TipoJaba *j: b->tipoJabasList()){
+            count += j->cantidad();
+        }
+    }
+    return count;
+}
+
 void Boleta::appendItemsEntradas(QQmlListProperty<ItemsDetailBoleta> *lst, ItemsDetailBoleta *tj)
 {
     reinterpret_cast<Boleta *>(lst->object)->appendItemsEntradas(tj);

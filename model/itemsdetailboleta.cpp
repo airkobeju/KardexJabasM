@@ -144,6 +144,11 @@ void ItemsDetailBoleta::setTipoJabas(const QList<TipoJaba *> &tipoJabas)
     m_tipoJabas = tipoJabas;
 }
 
+void ItemsDetailBoleta::removeTipoJabaAt(int i)
+{
+    m_tipoJabas.removeAt(i);
+}
+
 QVariantMap ItemsDetailBoleta::toJS() const
 {
     QMap<QString, QVariant> obj;

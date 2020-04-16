@@ -28,7 +28,7 @@ public:
 
     TipoJaba &operator=(const TipoJaba &tj);
 
-    QVariantMap toJS() const;
+    Q_INVOKABLE QVariantMap toJS() const;
 
 signals:
     void _idChanged();

@@ -62,7 +62,7 @@ public:
     QQmlListProperty<ItemsDetailBoleta> itemsEntrada();
     void appendItemsEntradas(ItemsDetailBoleta *const & tj);
     Q_INVOKABLE void appendItemsEntradas(QVariantMap const &tj);
-    Q_INVOKABLE void appendItemsEntradas(const QString &_id, unsigned int cantidad,  float peso, const QVariantList &tipoJabas);
+    void appendItemsEntradas(const QString &_id, unsigned int cantidad,  float peso, const QVariantList &tipoJabas);
     int itemsEntradasCount() const;
     ItemsDetailBoleta *itemsEntradasAt(int index) const;
     void clearItemsEntradas();
@@ -80,6 +80,9 @@ public:
     void setItemsSalida(const QList<ItemsDetailBoleta *> &salidas);
 
     Q_INVOKABLE QVariantMap toJS() const;
+
+    Q_INVOKABLE int countCantidadEntrada() const;
+    Q_INVOKABLE int countCantidadSalida() const;
 
 signals:
     void _idChanged();
