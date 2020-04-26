@@ -18,6 +18,9 @@ ApplicationWindow {
     property ListModel modelTipoJaba: ListModel{}
 
     Component.onCompleted: {
+
+        print("ServerHost: "+serverHost);
+
         gcProveedores.send();
         getSerieBoletaCompra.send();
         //getControllerKardex.send();
@@ -38,7 +41,7 @@ ApplicationWindow {
         Binding { target: frmSerie; property: "series"; value: modelKardexSeries },
         GetController{
             id: getBoletaList
-            url: "http://localhost:8095/rest/boleta"
+            url: serverHost+"/rest/boleta"
             onReplyFinishedJsArr:{
 //                arrResponse.forEach(function(item, index){
 //                    print("Proveedor ["+index+"]: "+ item.proveedor.name);
@@ -47,7 +50,7 @@ ApplicationWindow {
         },
         GetController{
             id: getSerieBoletaCompra
-            url: "http://localhost:8095/rest/serieboleta/by_operacion/COMPRA"
+            url: serverHost+"/rest/serieboleta/by_operacion/COMPRA"
             onReplyFinishedStr: {
                 modelKardexSeries = Js.replyFinished(strJson, modelKardexSeries);
             }
@@ -146,19 +149,19 @@ ApplicationWindow {
 
     GetController {
         id: gcProveedores
-        url: "http://localhost:8095/rest/proveedor/all"
+        url: serverHost + "/rest/proveedor/all"
         onReplyFinishedStr: Js.replyFinished(strJson, modelProveedores)
     }
 
 //    GetController {
 //        id: getControllerKardex
-//        url: "http://localhost:8095/rest/kardex/all"
+//        url: serverHost + "/rest/kardex/all"
 //        onReplyFinished: Js.replyFinished(strJson, kardexLanding.modelEntries)
 //    }
 
     GetController {
         id: getControllerKardexSeries
-        url: "http://localhost:8095/rest/kardexserie/all"
+        url: serverHost + "/rest/kardexserie/all"
         onReplyFinishedStr: {
             //modelKardexSeries = Js.replyFinished(strJson, modelKardexSeries);
         }
@@ -166,7 +169,7 @@ ApplicationWindow {
 
     GetController {
         id: getControllerTipoJaba
-        url: "http://localhost:8095/rest/tipojabamatriz/all"
+        url: serverHost + "/rest/tipojabamatriz/all"
         onReplyFinishedStr: Js.replyFinished(strJson, modelTipoJaba);
     }
 
@@ -186,6 +189,10 @@ ApplicationWindow {
         FormCompra {
             id: frmCompras
             //proveedores: modelProveedores
+            onBoletaSaved: {
+                //FIXME: mejorar uso de recurso implementando toItemKardex() en clase Boleta.
+                frmKardex.kardex.loadItems();
+            }
         }
 
         FormKardex {
@@ -196,6 +203,9 @@ ApplicationWindow {
         FormProveedor{
             id: frmProveedor
             proveedores: modelProveedores
+            onAppendProveedor: {
+                frmCompras.proveedores.appendProveedor( objProv );
+            }
         }
 
         FormSerie {

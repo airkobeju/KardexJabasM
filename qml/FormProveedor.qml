@@ -9,6 +9,8 @@ Page {
 
     property ListModel proveedores: ListModel{}
 
+    signal appendProveedor(var objProv)
+
     Component.onCompleted: {
 //        Js.getRequester("http://localhost:8095/rest/proveedor/all", function(json){
 //            proveedorModel.clear();
@@ -30,6 +32,7 @@ Page {
                                  "lastName":txtLastname.text
                              }, function(prov){
                                  proveedores.append(prov);
+                                 appendProveedor(prov);
                                  //proveedores[proveedores.length] = prov;
                              });
             txtName.clear();

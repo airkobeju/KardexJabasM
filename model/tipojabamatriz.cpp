@@ -97,3 +97,11 @@ void TipoJabaMatriz::setDefaultJaba(bool defaultJaba)
     m_defaultJaba = defaultJaba;
     emit defaultJabaChanged();
 }
+
+void TipoJabaMatriz::reset()
+{
+    this->m__id = "";
+    this->m_name = "";
+    this->m_abreviacion = "";
+    this->m_defaultJaba = false;
+}

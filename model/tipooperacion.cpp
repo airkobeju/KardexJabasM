@@ -73,3 +73,10 @@ QVariantMap TipoOperacion::toJS() const
 
     return QVariantMap(obj_operacion);
 }
+
+void TipoOperacion::reset()
+{
+    this->m__id = "";
+    this->m_name = "";
+    this->m_description = "";
+}

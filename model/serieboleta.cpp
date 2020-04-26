@@ -109,4 +109,12 @@ QVariantMap SerieBoleta::toJS() const
     return QVariantMap(obj);
 }
 
+void SerieBoleta::reset()
+{
+    this->m__id = "";
+    this->m_nota = "";
+    this->m_value = "";
+    this->m_operacion->reset();
+}
+
 

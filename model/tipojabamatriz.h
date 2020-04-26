@@ -34,6 +34,8 @@ public:
     bool defaultJaba() const;
     void setDefaultJaba(bool defaultJaba);
 
+    Q_INVOKABLE void reset();
+
 public slots:
     void printerJSObj(QVariantMap obj);
 

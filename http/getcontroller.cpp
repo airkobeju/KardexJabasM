@@ -3,6 +3,10 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QFile>
+#include <QTextStream>
+#include <QDesktopServices>
+#include <QUrl>
 
 GetController::GetController(QObject *parent) : QObject(parent)
 {
@@ -29,6 +33,30 @@ void GetController::finished(QNetworkReply *reply)
 {
     //reply->readAll() pasa toda la información al objeto str_json y
     //queda vacio despues de la operación.
+    QList<QByteArray> hds = reply->rawHeaderList();
+    QVariant h;
+    if(reply->hasRawHeader("Content-Disposition")){
+        h = reply->rawHeader("Content-Disposition");
+        QString _h = h.value<QString>();
+        QStringList lst_h = _h.split(';');
+        if(lst_h.at(0) == "attachment"){
+            QString file_name = lst_h.at(1).split('=').at(1);
+
+            QFile file(file_name);
+                if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+                    return;
+
+                file.write( reply->readAll() );
+
+                QTextStream out(&file);
+                //out.setCodec("ASCII");
+                //out << reply->readAll();
+                file.close();
+
+                QDesktopServices::openUrl(QUrl(file_name));
+        }
+
+    }
     QString str_json = QString::fromUtf8(reply->readAll());
     QJsonDocument _json(QJsonDocument::fromJson( str_json.toUtf8() ));
     if(_json.isArray()){

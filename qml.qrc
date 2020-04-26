@@ -23,5 +23,6 @@
         <file>qml/form/FormCompra.qml</file>
         <file>qml/js/model.js</file>
         <file>qml/utils/JTableHeaders.qml</file>
+        <file>imgs/export.png</file>
     </qresource>
 </RCC>

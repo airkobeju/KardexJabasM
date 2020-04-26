@@ -3,6 +3,9 @@
 #include "model/serieboleta.h"
 #include "model/tipooperacion.h"
 #include "model/proveedor.h"
+
+#include "util.h"
+
 #include <QMap>
 #include <QDebug>
 
@@ -11,7 +14,7 @@ KardexModel::KardexModel(QObject *parent)
 {
     m_controller = new GetController(this);
     connect(m_controller,SIGNAL(replyFinishedJsArr(QVariantList )), this, SLOT(replyFinishedJsArr(QVariantList )));
-    m_controller->setUrl(QUrl("http://localhost:8095/rest/tipojabamatriz"));
+    m_controller->setUrl(QUrl( Util::serverHost + "/rest/tipojabamatriz"));
     m_controller->send();
 }
 
@@ -33,8 +36,9 @@ int KardexModel::columnCount(const QModelIndex &parent) const
 
 QVariant KardexModel::data(const QModelIndex &index, int role) const
 {
+    (void) role;
     const int row= index.row();
-    const int col = role;
+    const int col = index.column();
 
     QVariant result;
     if (!index.isValid())
@@ -47,9 +51,9 @@ QVariant KardexModel::data(const QModelIndex &index, int role) const
     if(col == 0){
         result = itm->fecha();
     }else if (col == 1) {
-        result = QVariant::fromValue( itm->proveedor());
+        result = QVariant::fromValue( itm->proveedor()->name());
     }else if (col == 2) {
-        result = QVariant::fromValue( itm->serie());
+        result = QVariant::fromValue( itm->serie()->value());
     }else if (col == 3) {
         result = QVariant(itm->numeracion());
     }else if (col > 3) {
@@ -57,14 +61,14 @@ QVariant KardexModel::data(const QModelIndex &index, int role) const
         if(m_grupos.count()>lst_index){
             int cnt = itm->getEntradas().at(lst_index).cantidad;
             if(cnt == 0)
-                result = QVariant();
+                result = QVariant("");
             else
                 result = QVariant(cnt);
         }else{
             int lst2_index = lst_index - m_grupos.count();
             int cnt = itm->getSalidas().at(lst2_index).cantidad;
             if(cnt == 0)
-                result = QVariant();
+                result = QVariant("");
             else
                 result = QVariant(cnt);
         }
@@ -75,7 +79,8 @@ QVariant KardexModel::data(const QModelIndex &index, int role) const
 
 void KardexModel::loadItems()
 {
-    m_controller->setUrl(QUrl("http://localhost:8095/rest/boleta"));
+    clearItems();
+    m_controller->setUrl(QUrl( Util::serverHost + "/rest/boleta"));
     m_controller->send();
 }
 
@@ -91,7 +96,9 @@ ItemKardex *KardexModel::itemsAt(int index) const
 
 void KardexModel::clearItems()
 {
+    beginRemoveRows(QModelIndex(),0,rowCount()-1);
     m_items.clear();
+    endRemoveRows();
 }
 
 QQmlListProperty<ItemKardex> KardexModel::items()
@@ -105,7 +112,9 @@ QQmlListProperty<ItemKardex> KardexModel::items()
 
 void KardexModel::appendItems(ItemKardex * const &itm)
 {
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_items.append(itm);
+    endInsertRows();
 }
 
 void KardexModel::replyFinishedJsArr(QVariantList arrResponse)
@@ -189,16 +198,17 @@ QHash<int, QByteArray> KardexModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
 
-    roles.insert(0, "fecha");
-    roles.insert(1, "proveeedor");
-    roles.insert(2, "serie");
-    roles.insert(3, "numeracion");
+    roles.insert(Qt::DisplayRole, "display");
+//    roles.insert(0, "fecha");
+//    roles.insert(1, "proveeedor");
+//    roles.insert(2, "serie");
+//    roles.insert(3, "numeracion");
 
-    //ejemplo para tipoJaba: Color -> e_color
-    for(int i=0; i < m_grupos.count(); i++){
-        roles.insert(4+i,("e_"+m_grupos.at(i)->name().toLower()).toUtf8());
-        roles.insert(4+m_grupos.count()+i,("s_"+m_grupos.at(i)->name().toLower()).toUtf8());
-    }
+//    //ejemplo para tipoJaba: Color -> e_color
+//    for(int i=0; i < m_grupos.count(); i++){
+//        roles.insert(4+i,("e_"+m_grupos.at(i)->name().toLower()).toUtf8());
+//        roles.insert(4+m_grupos.count()+i,("s_"+m_grupos.at(i)->name().toLower()).toUtf8());
+//    }
 
     return roles;
 }
@@ -228,30 +238,30 @@ void KardexModel::clearItems(QQmlListProperty<ItemKardex> *lst)
     reinterpret_cast<KardexModel *>(lst->object)->clearItems();
 }
 
-QVariant KardexModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (role != Qt::DisplayRole)
-        return QVariant();
+//QVariant KardexModel::headerData(int section, Qt::Orientation orientation, int role) const
+//{
+//    if (role != Qt::DisplayRole)
+//        return QVariant();
 
-    if (orientation == Qt::Horizontal) {
-        if(section == 0){
-            return "fecha";
-        }else if (section == 1) {
-            return "proveedor";
-        }else if (section == 2) {
-            return "serie";
-        }else if (section == 3) {
-            return "numeracion";
-        }else if (section > 3) {
-            int lst_index = section - 4;
-            if(m_grupos.count()>lst_index){
-                return "e_"+m_grupos.at(lst_index)->name().toLower();
-            }else{
-                int lst2_index = lst_index - m_grupos.count();
-                return "s_"+m_grupos.at(lst2_index)->name().toLower();
-            }
-        }
+//    if (orientation == Qt::Horizontal) {
+//        if(section == 0){
+//            return "fecha";
+//        }else if (section == 1) {
+//            return "proveedor";
+//        }else if (section == 2) {
+//            return "serie";
+//        }else if (section == 3) {
+//            return "numeracion";
+//        }else if (section > 3) {
+//            int lst_index = section - 4;
+//            if(m_grupos.count()>lst_index){
+//                return "e_"+m_grupos.at(lst_index)->name().toLower();
+//            }else{
+//                int lst2_index = lst_index - m_grupos.count();
+//                return "s_"+m_grupos.at(lst2_index)->name().toLower();
+//            }
+//        }
 
-    }
-    return QVariant();
-}
+//    }
+//    return QVariant();
+//}

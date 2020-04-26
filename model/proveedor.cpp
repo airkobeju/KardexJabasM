@@ -124,3 +124,12 @@ QVariantMap Proveedor::toJS() const
 
     return QVariantMap(obj);
 }
+
+void Proveedor::reset()
+{
+    this->m__id = "";
+    this->m_name = "";
+    this->m_firstName = "";
+    this->m_lastName = "";
+    this->m_tipoJaba->reset();
+}

@@ -21,7 +21,7 @@ Page {
     resources: [
         PostController {
             id: post_tipojaba
-            url: "http://localhost:8095/rest/itemkardexdetail/add_tipojaba"
+            url: serverHost + "/rest/itemkardexdetail/add_tipojaba"
         }
     ]
 

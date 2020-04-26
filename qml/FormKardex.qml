@@ -1,17 +1,26 @@
 ﻿import QtQuick 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Controls 1.2 as C1
+//import QtQuick.Controls 1.2 as C1
 import "js/commons.js" as Js
 import "utils" as Ut
 import QtQuick.Layouts 1.12
 import com.jmtp.model 1.0
 import com.jmtp.http 1.0
-import QtQuick.Layouts 1.12
 
 
 Page{
     id: frmKardex
+
+    property alias kardex: kardex
+
     title: qsTr("Kardex")
+
+
+    Component.onCompleted: {
+        //kardex.loadItems();
+        kardex.loadItems();
+    }
+
 
     KardexModel{
         id: kardex
@@ -24,94 +33,171 @@ Page{
         }
     }
 
-    Component.onCompleted: {
-        kardex.loadItems();
+    GetController {
+        id: gcntKardex
+        url: serverHost + "/rest/kardex/export"
     }
 
-    C1.TableView{
+//    GetController {
+//        id: gcntKardexTbl
+//        url: "http://localhost:8095/rest/kardex"
+//        onReplyFinishedStr: {
+//            table_kardex.model = JSON.parse(strJson);
+//        }
+//    }
+
+//    GetController {
+//        id: gcntTipoJabas
+//        url: "http://localhost:8095/rest/tipojabamatriz"
+//        onReplyFinishedStr: {
+//            rptCols.model = JSON.parse(strJson);
+//            gcntKardexTbl.send();
+//        }
+//    }
+
+    RoundButton {
+        id: btnKardexExport
+        icon.source: "../imgs/export.png"
+        z:3
+        anchors.right: parent.right
+        anchors.top: parent.top
+        onClicked: {
+            print("=#$=#$=#$=#$=#$=#$=#$=#$");
+            gcntKardex.send();
+        }
+    }
+
+
+    TableView {
         id: table_kardex
-        anchors.fill: parent
+        x:0; y:0
+        width: parent.width
+        height: parent.height
+        columnSpacing: 1
+        rowSpacing: 1
+        clip: true
+        reuseItems: true
+        topMargin: 50
 
-        C1.TableViewColumn{
-            role: "fecha"
-            title: "Fecha"
-            width: 100
-            delegate: Text{
-                text: model.fecha
-            }
-        }
-        C1.TableViewColumn{
-            role: "proveeedor"
-            title: "Proveedor"
-            width: 100
-            delegate: Text{
-                text: model.proveeedor.name
-            }
-        }
-        C1.TableViewColumn{
-            role: "serie"
-            title: "Serie"
-            width: 100
-            delegate: Text{ text: model.serie.value }
-        }
-        C1.TableViewColumn{
-            role: "numeracion"
-            title: "Numeracion"
-            width: 100
-        }
-        C1.TableViewColumn{
-            role: "e_beta"
-            title: "EBeta"
-            width: 50
-        }
-        C1.TableViewColumn{
-            role: "e_color"
-            title: "EColor"
-            width: 50
-        }
-        C1.TableViewColumn{
-            role: "e_danper"
-            title: "EDanper"
-            width: 50
-        }
-        C1.TableViewColumn{
-            role: "e_global"
-            title: "EGlobal"
-            width: 50
-        }
-        C1.TableViewColumn{
-            role: "e_viru"
-            title: "EViru"
-            width: 50
+        Text {
+            id: header
+            y:-25
+            text: "A table header"
         }
 
-        C1.TableViewColumn{
-            role: "s_beta"
-            title: "SBeta"
-            width: 50
+        property var columnWidths: [100, 150, 70, 70,40,40,40,40,40,40,40,40,40,40]
+        columnWidthProvider: function (column) { return columnWidths[column] }
+
+        delegate: Rectangle {
+            implicitWidth: childrenRect.width
+            implicitHeight: 40
+            color: ((index-(table_kardex.rows*column))%2)===0?"#f5f5f5":"#ffffff" //#f5f5f5
+
+            Row{
+                width: parent.width
+                height: parent.height
+                spacing: 15
+                Text {
+                    width: parent.width
+                    height: parent.height
+                    text: display
+                    verticalAlignment: Text.AlignVCenter
+                    leftPadding: 5
+                }
+            }
+
         }
-        C1.TableViewColumn{
-            role: "s_color"
-            title: "SColor"
-            width: 50
-        }
-        C1.TableViewColumn{
-            role: "s_danper"
-            title: "SDanper"
-            width: 50
-        }
-        C1.TableViewColumn{
-            role: "s_global"
-            title: "SGlobal"
-            width: 50
-        }
-        C1.TableViewColumn{
-            role: "s_viru"
-            title: "SViru"
-            width: 50
-        }
+
 
     }
+
+
+//    C1.TableView{
+//        id: table_kardex
+//        anchors.fill: parent
+//        anchors.topMargin: 40
+
+//        C1.TableViewColumn{
+//            role: "fecha"
+//            title: "Fecha"
+//            width: 100
+//            delegate: Text{
+//                text: model.fecha
+//            }
+//        }
+//        C1.TableViewColumn{
+//            role: "proveeedor"
+//            title: "Proveedor"
+//            width: 100
+//            delegate: Text{
+//                text: model.proveeedor.name
+//            }
+//        }
+//        C1.TableViewColumn{
+//            role: "serie"
+//            title: "Serie"
+//            width: 100
+//            delegate: Text{ text: model.serie.value }
+//        }
+//        C1.TableViewColumn{
+//            role: "numeracion"
+//            title: "Numeracion"
+//            width: 100
+//        }
+
+//        C1.TableViewColumn{
+//            role: "e_beta"
+//            title: "EBeta"
+//            width: 50
+//        }
+//        C1.TableViewColumn{
+//            role: "e_color"
+//            title: "EColor"
+//            width: 50
+//        }
+//        C1.TableViewColumn{
+//            role: "e_danper"
+//            title: "EDanper"
+//            width: 50
+//        }
+//        C1.TableViewColumn{
+//            role: "e_global"
+//            title: "EGlobal"
+//            width: 50
+//        }
+//        C1.TableViewColumn{
+//            role: "e_viru"
+//            title: "EViru"
+//            width: 50
+//        }
+
+//        C1.TableViewColumn{
+//            role: "s_beta"
+//            title: "SBeta"
+//            width: 50
+//        }
+//        C1.TableViewColumn{
+//            role: "s_color"
+//            title: "SColor"
+//            width: 50
+//        }
+//        C1.TableViewColumn{
+//            role: "s_danper"
+//            title: "SDanper"
+//            width: 50
+//        }
+//        C1.TableViewColumn{
+//            role: "s_global"
+//            title: "SGlobal"
+//            width: 50
+//        }
+//        C1.TableViewColumn{
+//            role: "s_viru"
+//            title: "SViru"
+//            width: 50
+//        }
+
+//    }
 
 }
 

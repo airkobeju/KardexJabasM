@@ -1,11 +1,12 @@
 #include "seriemodel.h"
+#include "util.h"
 
 SerieModel::SerieModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     getController = new GetController(this);
     connect(getController,SIGNAL(replyFinishedJsArr(QVariantList )), this, SLOT(replyFinishedJsArr(QVariantList )));
-    getController->setUrl(QUrl("http://localhost:8095/rest/serieboleta/by_operacion/COMPRA"));
+    getController->setUrl(QUrl( Util::serverHost + "/rest/serieboleta/by_operacion/COMPRA"));
 }
 
 int SerieModel::rowCount(const QModelIndex &parent) const
@@ -73,7 +74,7 @@ Qt::ItemFlags SerieModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return Qt::ItemIsEditable;
 }
 
 QHash<int, QByteArray> SerieModel::roleNames() const

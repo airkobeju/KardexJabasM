@@ -8,13 +8,14 @@
 #include "model/tipojaba.h"
 #include "model/tipojabamatriz.h"
 #include "model/itemsdetailboleta.h"
+#include "util.h"
 
 BoletaModel::BoletaModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     m_boletaController = new GetController(this);
     connect(m_boletaController,SIGNAL(replyFinishedJsArr(QVariantList )), this, SLOT(replyFinishedJsArr(QVariantList )));
-    m_boletaController->setUrl(QUrl("http://localhost:8095/rest/boleta"));
+    m_boletaController->setUrl(QUrl( Util::serverHost + "/rest/boleta"));
 }
 
 int BoletaModel::rowCount(const QModelIndex &parent) const
@@ -24,7 +25,6 @@ int BoletaModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    // FIXME: Implement me!
     return m_boletas.count();
 }
 
@@ -107,7 +107,7 @@ Qt::ItemFlags BoletaModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return QAbstractListModel::flags(index) | Qt::ItemIsEditable; // FIXME: Implement me!
+    return QAbstractListModel::flags(index) | Qt::ItemIsEditable;
 }
 
 QHash<int, QByteArray> BoletaModel::roleNames() const

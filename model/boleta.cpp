@@ -149,7 +149,6 @@ void Boleta::appendItemsEntradas(ItemsDetailBoleta * const &e)
     m_itemsEntrada.append(e);
 }
 
-//TODO: verificar la firma de la función.
 void Boleta::appendItemsEntradas(QVariantMap const &tj)
 {
     ItemsDetailBoleta *entrada = new ItemsDetailBoleta();
@@ -299,6 +298,27 @@ int Boleta::countCantidadSalida() const
         }
     }
     return count;
+}
+
+ItemKardex *Boleta::toItemKardex() const
+{
+    //TODO: implementar la creación del ItemKardex para mejorar el uso de recursos.
+    return new ItemKardex();
+}
+
+void Boleta::resetAsCompra()
+{
+    this->m__id = "";
+    this->m_serie->reset();
+    this->m_numeracion = 0;
+    this->m_fecha = "";
+    this->m_proveedor->reset();
+    this->m_nota = "";
+    this->m_itemsEntrada.clear();
+    this->m_itemsSalida.clear();
+    this->appendItemsSalida(new ItemsDetailBoleta());
+    this->m_venta = false;
+    this->m_close = false;
 }
 
 void Boleta::appendItemsEntradas(QQmlListProperty<ItemsDetailBoleta> *lst, ItemsDetailBoleta *tj)

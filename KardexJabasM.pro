@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         http/getcontroller.cpp \
         http/postcontroller.cpp \
+        kadexproxymodel.cpp \
         kardexmodel.cpp \
         main.cpp \
         model/boleta.cpp \
@@ -33,7 +34,8 @@ SOURCES += \
         proveedormodel.cpp \
         seriemodel.cpp \
         tipojabamodel.cpp \
-        boletamodel.cpp
+        boletamodel.cpp \
+        util.cpp
 
 RESOURCES += qml.qrc
 
@@ -51,6 +53,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     http/getcontroller.h \
     http/postcontroller.h \
+    kadexproxymodel.h \
     kardexmodel.h \
     model/boleta.h \
     model/itemgrupokardex.h \
@@ -65,7 +68,8 @@ HEADERS += \
     proveedormodel.h \
     seriemodel.h \
     tipojabamodel.h \
-    boletamodel.h
+    boletamodel.h \
+    util.h
 
 DISTFILES += \
     utils/jfieldItem.txt

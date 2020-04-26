@@ -45,6 +45,8 @@ public:
     Proveedor *proveedorAt(int index) const;
     void clearProveedores();
 
+    Q_INVOKABLE void appendProveedor(const QVariantMap &p);
+
 signals:
     void replyFinished(QVariantList arrResponse);
 

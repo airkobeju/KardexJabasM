@@ -1,11 +1,12 @@
 #include "proveedormodel.h"
+#include "util.h"
 
 ProveedorModel::ProveedorModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     getController = new GetController(this);
     connect(getController,SIGNAL(replyFinishedJsArr(QVariantList )), this, SLOT(replyFinishedJsArr(QVariantList )));
-    getController->setUrl(QUrl("http://localhost:8095/rest/proveedor"));
+    getController->setUrl(QUrl( Util::serverHost + "/rest/proveedor"));
 }
 
 int ProveedorModel::rowCount(const QModelIndex &parent) const
@@ -76,7 +77,7 @@ Qt::ItemFlags ProveedorModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return Qt::ItemIsEditable;
 }
 
 QHash<int, QByteArray> ProveedorModel::roleNames() const
@@ -130,6 +131,22 @@ Proveedor *ProveedorModel::proveedorAt(int index) const
 void ProveedorModel::clearProveedores()
 {
     m_proveedores.clear();
+}
+
+void ProveedorModel::appendProveedor(const QVariantMap &p)
+{
+    Proveedor *proveedor = new Proveedor();
+    proveedor->set_id(p.value("id").toString());
+    proveedor->setName(p.value("name").toString());
+    proveedor->setFirstName(p.value("firstName").toString());
+    proveedor->setLastName(p.value("lastName").toString());
+        QVariantMap _prov_tipojaba = p.value("tipoJaba").value<QVariantMap>();
+        TipoJabaMatriz *prov_tipojaba = new TipoJabaMatriz();
+        prov_tipojaba->set_id(_prov_tipojaba.value("id").toString());
+        prov_tipojaba->setName(_prov_tipojaba.value("name").toString());
+        prov_tipojaba->setAbreviacion(_prov_tipojaba.value("abreviacion").toString());
+        proveedor->setTipoJaba(prov_tipojaba);
+    appendProveedor(proveedor);
 }
 
 void ProveedorModel::replyFinishedJsArr(QVariantList arrResponse)

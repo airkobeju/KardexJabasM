@@ -24,7 +24,7 @@ function saveProveedor(proveedor, fnt){
             fnt(JSON.parse(xhr.responseText.toString()));
         }
     };
-    xhr.open("PUT", "http://localhost:8095/rest/proveedor/save", true);
+    xhr.open("PUT",  serverHost + "/rest/proveedor/save", true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(proveedor));
 }
@@ -38,7 +38,7 @@ function createKardexEntry(entry, fnt){
             fnt(JSON.parse(xhr.responseText.toString()));
         }
     };
-    xhr.open("POST", "http://localhost:8095/rest/boleta/save");
+    xhr.open("POST", serverHost + "/rest/boleta/save");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(entry));
 }
@@ -52,7 +52,7 @@ function addPesoItemKardex(idKardex, pesos, fnt){
             fnt(JSON.parse(xhr.responseText.toString()));
         }
     };
-    xhr.open("POST", "http://localhost:8095/rest/kardex/addPesos");
+    xhr.open("POST", serverHost + "/rest/kardex/addPesos");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     var str_rq = JSON.stringify({
                                     "idKardex":idKardex,
@@ -70,7 +70,7 @@ function createSerieEntry(entry, fnt){
             fnt(JSON.parse(xhr.responseText.toString()));
         }
     };
-    xhr.open("POST", "http://localhost:8095/rest/kardexserie/save");
+    xhr.open("POST", serverHost + "/rest/kardexserie/save");
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(entry));
 }
@@ -84,7 +84,7 @@ function updatePeso(objPeso, fnt){
             fnt(JSON.parse(xhr.responseText.toString()));
         }
     };
-    xhr.open("PUT", "http://localhost:8095/rest/itemkardexdetail/save", true);
+    xhr.open("PUT", serverHost + "/rest/itemkardexdetail/save", true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(objPeso));
 }
@@ -111,7 +111,7 @@ function saveTipoJaba(tipo_jaba, fnt){
             fnt(JSON.parse(xhr.responseText.toString()));
         }
     };
-    xhr.open("POST", "http://localhost:8095/rest/tipojabamatriz/save", true);
+    xhr.open("POST", serverHost + "/rest/tipojabamatriz/save", true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.send(JSON.stringify(tipo_jaba));
 }

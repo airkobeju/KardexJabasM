@@ -107,7 +107,7 @@ FocusScope {
         },
         GetController {
             id: getCntTipoJaba
-            url: "http://localhost:8095/rest/tipojabamatriz/all"
+            url: serverHost + "/rest/tipojabamatriz/all"
             onReplyFinishedStr:{
                 Js.replyFinished(strJson, matrixTipoJaba);
             }

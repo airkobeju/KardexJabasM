@@ -3,41 +3,21 @@ import QtQuick.Controls 2.12
 import "../utils" as Ut
 import com.jmtp.model 1.0 as JM
 import com.jmtp.http 1.0 as HTTP
-import "../js/model.js" as JS_Model
 
 Page {
     id: frmCompra
 
     property int controlsHeight: 40
     property alias series: cmbCompraSerie.model
-    property alias proveedores: jtxtCompraProveedor.list
+    property alias proveedores: proveedorModel
     property ListModel tipoJabaList: ListModel{}
     property int cantidadEntrada:0
     property int cantidadSalida:0
     property alias boleta: objBoleta
-        /*{
-        "id": "",
-        "serie":cmbCompraSerie.model.get( cmbCompraSerie.currentIndex ),
-        "numeracion": parseInt( txtCompraNumeracion.text ),
-        "fecha":txtCompraFecha.text,
-        "proveedor": jtxtCompraProveedor.currentObject,
-        "nota":"",
-        "itemsEntrada": [],
-        "itemsSalida": [
-                    {
-                        "id": "",
-                        "cantidad": 0,
-                        "peso": 0,
-                        "nota": "",
-                        "tipoJaba": jtfCompraDevolucionJabas.modelLister.jsData()
-                    }
-                ],
-        "venta": false,
-        "close": false
-    }*/
     property int cantidadSalidaTotal: 0
 
     signal seriesLoad()
+    signal boletaSaved(var boleta)
 
     QtObject {
         id: js_commons
@@ -57,24 +37,27 @@ Page {
             txtCompraFecha.text = today;
         }
 
-        function resetBoleta(){
-            boleta['id'] = "";
-            boleta['nota'] = "";
+        function resetBoleta() {
+            var pss_boleta = boleta;
+            boleta['_id'] = "";
+//            boleta['nota'] = "";
             boleta['itemsEntrada'] = ([]);
-            boleta['itemsSalida'] =  [
-                        {
-                            "id": "",
-                            "cantidad": frmCompra.cantidadSalidaTotal,
-                            "peso": 0,
-                            "nota": "",
-                            "tipoJaba": jtfCompraDevolucionJabas.modelLister.jsData()
-                        }
-                    ];
+            boleta['itemsSalida'][0]['_id'] = "";
+            boleta['itemsSalida'][0]['cantidad'] = 0;
+            boleta['itemsSalida'][0]['peso'] = 0;
+            boleta['itemsSalida'][0].clearTipoJabas();
+
             boleta['venta'] = false;
             boleta['close'] = false;
+//            boleta.resetAsCompra();
+//            boleta.itemsSalida[0].cantidad = frmCompra.cantidadSalidaTotal;
+//            boleta.itemsSalida[0].tipoJaba = jtfCompraDevolucionJabas.modelLister.jsData();
         }
 
         function clearForm(){
+            //TODO: comprobar que el reseteo no desligue las ligaduras con las propiedades
+            resetBoleta();
+
             cantidadEntrada = 0;
             cantidadSalida = 0;
             txtCompraNumeracion.clear();
@@ -90,6 +73,7 @@ Page {
                                             "tipoJaba": []
                                         } );
             jtfCompraDevolucionJabas.clear();
+
         }
 
         function cantidadSalidaTotal(data){
@@ -132,21 +116,23 @@ Page {
         Binding { target: objBoleta; property: "numeracion"; value: parseInt(txtCompraNumeracion.text)},
         Binding { target: objBoleta; property: "fecha"; value: txtCompraFecha.text},
         Binding { target: jtxtCompraProveedor; property: "list"; value: proveedorModel.proveedores},
-        JM.Boleta{
+        JM.Boleta {
             id: objBoleta
             proveedor: jtxtCompraProveedor.currentObject
         },
         JM.ProveedorModel{
             id: proveedorModel
             onReplyFinished: {
+                var ps = proveedorModel;
                 print("Largo de proveedores: "+count());
             }
         },
         HTTP.PostController {
             id: frmCompra_postController
-            url: "http://localhost:8095/rest/boleta/save"
+            url: serverHost + "/rest/boleta/save"
             onReplyFinished: {
                 var blt = JSON.parse( strJson );
+                boletaSaved(blt); //emitiendo señal
                 if(blt['id'] !== "" )
                     js_commons.clearForm();
             }
@@ -186,8 +172,8 @@ Page {
 
         onClicked: {
             //revisando si hay devolucion
-            if(boleta.itemsSalida[0].cantidad === 0)
-                boleta.clearItemsSalida();
+//            if(boleta.itemsSalida[0].cantidad === 0)
+//                boleta.clearItemsSalida();
             var pssBoleta = JSON.stringify( boleta.toJS() );
             frmCompra_postController.jsonString = pssBoleta;
             //Envia el objet Json con los datos de la boleta para ser guardados.

@@ -68,7 +68,7 @@ Qt::ItemFlags ItemDetailBoletaModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return Qt::ItemIsEditable;
 }
 
 QHash<int, QByteArray> ItemDetailBoletaModel::roleNames() const

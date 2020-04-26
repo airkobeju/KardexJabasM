@@ -60,7 +60,7 @@ Qt::ItemFlags TipoJabaModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return Qt::ItemIsEditable;
 }
 
 void TipoJabaModel::appendTipoJaba(TipoJaba * const &tjaba)
@@ -142,3 +142,4 @@ QHash<int, QByteArray> TipoJabaModel::roleNames() const
     names[TipoJabaRole] = "tipoJaba";
     return names;
 }
+

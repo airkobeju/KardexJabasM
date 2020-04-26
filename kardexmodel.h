@@ -31,7 +31,7 @@ public:
     QQmlListProperty<ItemKardex> items();
 
     virtual QHash<int, QByteArray> roleNames() const override;
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    //virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
     QList<ItemKardex *> getItems() const;
 

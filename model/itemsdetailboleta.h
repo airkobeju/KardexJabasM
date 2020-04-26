@@ -37,7 +37,7 @@ public:
     Q_INVOKABLE void appendTipoJaba(const QVariantMap &tipoJaba);
     int tipoJabaCount() const;
     TipoJaba *tipoJabaAt(int index) const;
-    void clearTipoJabas();
+    Q_INVOKABLE void clearTipoJabas();
 
     QList<TipoJaba *> tipoJabasList() const;
     void setTipoJabas(const QList<TipoJaba *> &tipoJabas);

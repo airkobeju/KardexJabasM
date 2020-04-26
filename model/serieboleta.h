@@ -44,6 +44,8 @@ public:
 
     QVariantMap toJS() const;
 
+    Q_INVOKABLE void reset();
+
 signals:
     void _idChanged();
     void valueChanged();

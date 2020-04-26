@@ -8,6 +8,7 @@
 #include "serieboleta.h"
 #include "proveedor.h"
 #include "itemsdetailboleta.h"
+#include "itemkardex.h"
 
 class Boleta : public QObject
 {
@@ -83,6 +84,10 @@ public:
 
     Q_INVOKABLE int countCantidadEntrada() const;
     Q_INVOKABLE int countCantidadSalida() const;
+
+    Q_INVOKABLE ItemKardex *toItemKardex() const;
+
+    Q_INVOKABLE void resetAsCompra();
 
 signals:
     void _idChanged();

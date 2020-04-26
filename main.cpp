@@ -1,10 +1,13 @@
 #include <QGuiApplication>
+#include <QSettings>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QFont>
 #include <QFontDatabase>
 #include <QVariant>
 #include <QDebug>
+
+#include "util.h"
 
 #include "http/getcontroller.h"
 #include "http/postcontroller.h"
@@ -28,12 +31,21 @@
 
 int main(int argc, char *argv[])
 {
+    QSettings settings(QDir::current().path() + "/settings.ini", QSettings::IniFormat);
+//    settings.beginGroup("AppConfig");
+//    settings.setValue("OrganizationName","JMTP");
+//    settings.setValue("OrganizationDomain","jmtp.com");
+//    settings.setValue("ApplicationName","Jabas Kardex");
+//    settings.endGroup();
+
+    Util::serverHost = settings.value("Server/Url").toString();
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
-    app.setOrganizationName("JMTP");
-    app.setOrganizationDomain("jmtp.com");
-    app.setApplicationName("Jabas Kardex");
+    app.setOrganizationName(settings.value("AppConfig/OrganizationName").toString());
+    app.setOrganizationDomain(settings.value("AppConfig/OrganizationDomain").toString());
+    app.setApplicationName(settings.value("AppConfig/ApplicationName").toString());
 
     QFontDatabase::addApplicationFont("qrc:/fonts/Comfortaa-Regular.ttf");
     QFontDatabase::addApplicationFont("qrc:/fonts/Existence-Light.ttf");
@@ -66,7 +78,7 @@ int main(int argc, char *argv[])
 
 //    KardexModel *kardexModel = new KardexModel();
 //    qDebug()<<"**Cantidad de Items: "<< kardexModel->rowCount();
-//    engine.rootContext()->setContextProperty("kardexModel", kardexModel);
+    engine.rootContext()->setContextProperty("serverHost", settings.value("Server/Url").toString());
 
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
